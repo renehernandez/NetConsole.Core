@@ -1,0 +1,5 @@
+NUGET
+  remote: D:\SOFT\Development\VS\NuGet_Repository
+  specs:
+    FAKE (3.28.5)
+    NUnit (2.6.4)
