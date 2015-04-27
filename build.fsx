@@ -22,7 +22,7 @@ let testReferences = !! "src/tests/**/*.csproj"
 
 let projectName = "NetConsole.Core"
 let release = LoadReleaseNotes "RELEASE_NOTES.md"
-let version = "0.0.1" // or retrieve from CI server
+let version = release.NugetVersion
 
 
 Target "Clean" (fun _ ->
@@ -76,6 +76,7 @@ Target "All" (fun _ ->
     ==> "BuildTest"
     ==> "Test"
     ==> "Zip"
+    ==> "NuGet"
     ==> "All"
 
 // start build

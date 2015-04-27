@@ -56,6 +56,12 @@
   </Target>
   -->
   <ItemGroup>
+    <ProjectReference Include="..\..\app\NetConsole.Core\NetConsole.Core.csproj">
+      <Project>{4b20961b-71b1-4f1e-bac3-c835d9c220ca}</Project>
+      <Name>NetConsole.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="nunit.framework">
       <HintPath>..\..\..\packages\NUnit\lib\nunit.framework.dll</HintPath>
       <Private>True</Private>
@@ -83,11 +89,5 @@
       <Private>True</Private>
       <Paket>True</Paket>
     </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\app\NetConsole.Core\NetConsole.Core.csproj">
-      <Project>{4b20961b-71b1-4f1e-bac3-c835d9c220ca}</Project>
-      <Name>NetConsole.Core</Name>
-    </ProjectReference>
   </ItemGroup>
 </Project>
