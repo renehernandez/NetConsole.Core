@@ -18,7 +18,7 @@ namespace NetConsole.Core.Tests
         [SetUp]
         public void SetUp()
         {
-            _importer = MockRepository.GenerateMock<CommandImporter>();
+            _importer = new CommandImporter();
             _importer.ImportAllCommands();
         }
 
