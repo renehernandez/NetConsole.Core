@@ -41,14 +41,20 @@
   <ItemGroup>
     <Compile Include="Attributes\CommandAttribute.cs" />
     <Compile Include="Attributes\DefaultActionAttribute.cs" />
-    <Compile Include="CommandListener.cs" />
+    <Compile Include="Grammar\CommandExtractor.cs" />
     <Compile Include="Commands\CloseCommand.cs" />
     <Compile Include="Commands\EchoCommand.cs" />
     <Compile Include="Commands\PromptCommand.cs" />
     <Compile Include="Extensions\CommandExtension.cs" />
     <Compile Include="Extensions\TypeLoadableExtensions.cs" />
     <Compile Include="Factories\CommandFactory.cs" />
+    <Compile Include="Grammar\ParamInfo.cs" />
+    <Compile Include="Grammar\ReturnInfo.cs" />
     <Compile Include="Interfaces\ICommand.cs" />
+    <Compile Include="Interfaces\ICommandFactory.cs" />
+    <Compile Include="Interfaces\ICommandInfo.cs" />
+    <Compile Include="Interfaces\IParameterInfo.cs" />
+    <Compile Include="Interfaces\IReturn.cs" />
     <Compile Include="obj\Debug\CommandGrammarBaseListener.cs" />
     <Compile Include="obj\Debug\CommandGrammarBaseVisitor.cs" />
     <Compile Include="obj\Debug\CommandGrammarLexer.cs" />
@@ -58,7 +64,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Antlr4 Include="CommandGrammar.g4">
+    <Antlr4 Include="Grammar\CommandGrammar.g4">
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>NetConsole.Core</CustomToolNamespace>
       <Listener>True</Listener>

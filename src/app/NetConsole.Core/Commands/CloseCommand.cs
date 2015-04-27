@@ -10,17 +10,22 @@ namespace NetConsole.Core.Commands
     {
         # region Properties
 
-        public string Name { get; set; }
+        public int Status { get; set; }
 
+        public string Name { get; set; }
 
         public string Overview { get; set; }
 
         # endregion
+
+        # region Constructors
 
         public CloseCommand()
         {
             Name = "close";
             Overview = "This command close the current console instance";
         }
+
+        # endregion
     }
 }

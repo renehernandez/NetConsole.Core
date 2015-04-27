@@ -6,17 +6,36 @@ using NetConsole.Core.Interfaces;
 
 namespace NetConsole.Core.Factories
 {
-    public static class CommandFactory
+    public class CommandFactory : ICommandFactory
     {
 
-        static Dictionary<string, ICommand> _cache = new Dictionary<string, ICommand>();
+        private static Dictionary<string, ICommand> _cache;
 
-        public static void Register<T>(T instance) where T : ICommand
+        static Dictionary<string, ICommandInfo> _metadata;
+
+        public CommandFactory()
+        {
+            _cache = new Dictionary<string, ICommand>();
+            _metadata = new Dictionary<string, ICommandInfo>();
+        }
+
+        public void Register<T>(T instance) where T : ICommand
         {
             _cache.Add(instance.Name, instance);
         }
 
-        public static void RegisterAll()
+        public ICommand Unregister(string cmdName)
+        {
+            if(!Contains(cmdName))
+                throw new Exception(string.Format("Unable to unregister {0} command because is not presented in the factory", cmdName));
+
+            var cmd = _cache[cmdName];
+            _cache.Remove(cmdName);
+
+            return cmd;
+        }
+
+        public void RegisterAll()
         {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
@@ -27,12 +46,20 @@ namespace NetConsole.Core.Factories
             }
         }
 
-        public static ICommand Get(string textKey)
+        public bool Contains(string cmdName)
         {
-            return _cache[textKey];
+            return _cache.ContainsKey(cmdName);
         }
 
-        public static IEnumerable<ICommand> Get()
+        public ICommand GetInstance(string cmdName)
+        {
+            if(!Contains(cmdName))
+                throw new Exception(string.Format("Command {0} is not present in the factory.", cmdName));
+
+            return _cache[cmdName];
+        }
+
+        public IEnumerable<ICommand> GetAll()
         {
             return _cache.Values;
         } 
