@@ -1,5 +1,5 @@
-source D:\SOFT\Development\VS\NuGet_Repository
 source https://nuget.org/api/v2
+source D:\SOFT\Development\VS\NuGet_Repository
 
 nuget Antlr4
 nuget NUnit ~> 2.6.4
