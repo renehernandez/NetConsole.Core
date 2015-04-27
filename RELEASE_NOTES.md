@@ -1,3 +1,7 @@
+#### 0.1.1 - April 27 2015
+* Added CommandImporter for easier usage of grammar and commands
+* Removed unused classes and interfaces
+
 #### 0.1.0 - April 26 2015
 * Created basic NetConsole.Core project
 * Handle command and basic error management
