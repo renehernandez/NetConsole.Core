@@ -1,0 +1,16 @@
+type project
+owners
+    renehernandez
+authors
+    renehernandez
+projectUrl
+    http://github.com/renehernandez/NetConsole.Core
+licenseUrl
+    http://github.com/renehernandez/NetConsole.Core/blob/master/LICENSE.md
+requireLicenseAcceptance
+    false
+copyright
+    Copyright 2015
+description
+    NetConsole.Core is a package that it provides the minimum requirements to handle commands.
+    It contains several classes and interface to extend and reuse the already created functionality.
