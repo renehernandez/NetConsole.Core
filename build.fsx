@@ -73,17 +73,6 @@ Target "ReleasePackage" (fun _ ->
         })
 )
 
-Target "PushDevelop" (fun _ ->
-    Branches.pushBranch "" "origin" "develop"
-)
-
-Target "PushMaster" (fun _ ->
-    Branches.pushBranch "" "origin" "master"
-
-    Branches.tag "" release.NugetVersion
-    Branches.pushTag "" "origin" release.NugetVersion
-)
-
 Target "Master" (fun _ ->
     trace "Build completed"
 )
@@ -99,7 +88,6 @@ Target "Develop" (fun _ ->
     ==> "Test"
     ==> "BuildZip"
     ==> "BuildPackage"
-    ==> "PushDevelop"
     ==> "Develop"
 
 "Clean"
@@ -108,7 +96,7 @@ Target "Develop" (fun _ ->
     ==> "Test"
     ==> "BuildZip"
     ==> "BuildPackage"
-    ==> "PushMaster"
+    ==> "ReleasePackage"
     ==> "Master"
 
 // start build
