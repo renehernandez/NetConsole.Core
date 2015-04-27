@@ -30,12 +30,12 @@ Target "Clean" (fun _ ->
 )
 
 Target "BuildApp" (fun _ ->
-    MSBuildRelease buildDir "Build" appReferences
+    MSBuildRelease buildDir "Rebuild" appReferences
             |> Log "AppBuild-Output: "
 )
 
 Target "BuildTest" (fun _ ->
-    MSBuildDebug testDir "Build" testReferences
+    MSBuildDebug testDir "Rebuild" testReferences
             |> Log "TestBuild-Output: "
 )
 
