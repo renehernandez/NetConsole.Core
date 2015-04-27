@@ -1,4 +1,8 @@
 source D:\SOFT\Development\VS\NuGet_Repository
+source https://nuget.org/api/v2
 
+nuget Antlr4
 nuget NUnit ~> 2.6.4
 nuget FAKE ~> 3.28.5
+nuget NUnit.Runners
+nuget NUnitTestAdapter

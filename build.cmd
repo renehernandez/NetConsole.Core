@@ -16,4 +16,4 @@ IF EXIST init.fsx (
   .paket\paket.exe install
   packages\FAKE\tools\FAKE.exe init.fsx
 )
-packages\FAKE\tools\FAKE.exe build.fsx
+packages\FAKE\tools\FAKE.exe build.fsx %*
