@@ -15,7 +15,7 @@ namespace NetConsole.Core.Tests
         private ICommand _cmd;
 
         [SetUp]
-        public void Init()
+        public void SetUp()
         {
             _factory = new CommandFactory();
             _cmd = new EchoCommand();

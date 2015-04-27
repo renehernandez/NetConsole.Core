@@ -13,25 +13,36 @@ namespace NetConsole.Core.Managers
     {
         # region Private Fields
 
+        private ICommandFactory _factory;
         private CommandExtractor _extractor;
 
         # endregion
 
         # region Constructors
-
-        public CommandImporter()
+        
+        public CommandImporter(): this(new CommandFactory())
         {
-            _extractor = new CommandExtractor(new CommandFactory());
         }
 
         public CommandImporter(ICommandFactory factory)
         {
-            _extractor = new CommandExtractor(factory);
+            _factory = factory;
+            _extractor = new CommandExtractor(_factory);
         }
 
         # endregion
 
         # region Public Methods
+
+        public void ImportAllCommands()
+        {
+            _factory.RegisterAll();
+        }
+
+        public void ImportCommand(ICommand command)
+        {
+            _factory.Register(command);
+        }
 
         public ReturnInfo[] GetOutputFromString(string input)
         {

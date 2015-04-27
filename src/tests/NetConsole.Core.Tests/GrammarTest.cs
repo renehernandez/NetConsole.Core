@@ -23,7 +23,7 @@ namespace NetConsole.Core.Tests
         private CommandFactory _factory;
 
         [SetUp]
-        public void Init()
+        public void SetUp()
         {
             _factory = new CommandFactory();
             _factory.Register(new EchoCommand());
