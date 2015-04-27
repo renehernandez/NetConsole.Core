@@ -45,7 +45,7 @@
     <Compile Include="Exceptions\DuplicatedCommandNameException.cs" />
     <Compile Include="Exceptions\FailedUnregisterOperationException.cs" />
     <Compile Include="Exceptions\UnregisteredCommandException.cs" />
-    <Compile Include="Grammar\CommandExtractor.cs" />
+    <Compile Include="Managers\CommandExtractor.cs" />
     <Compile Include="Commands\CloseCommand.cs" />
     <Compile Include="Commands\EchoCommand.cs" />
     <Compile Include="Commands\PromptCommand.cs" />
@@ -56,9 +56,9 @@
     <Compile Include="Grammar\ReturnInfo.cs" />
     <Compile Include="Interfaces\ICommand.cs" />
     <Compile Include="Interfaces\ICommandFactory.cs" />
-    <Compile Include="Interfaces\ICommandInfo.cs" />
     <Compile Include="Interfaces\IParameterInfo.cs" />
     <Compile Include="Interfaces\IReturn.cs" />
+    <Compile Include="Managers\CommandImporter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -69,6 +69,7 @@
       <Visitor>True</Visitor>
     </Antlr4>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

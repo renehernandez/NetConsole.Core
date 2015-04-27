@@ -12,12 +12,9 @@ namespace NetConsole.Core.Factories
 
         private static Dictionary<string, ICommand> _cache;
 
-        static Dictionary<string, ICommandInfo> _metadata;
-
         public CommandFactory()
         {
             _cache = new Dictionary<string, ICommand>();
-            _metadata = new Dictionary<string, ICommandInfo>();
         }
 
         public void Register<T>(T instance) where T : ICommand

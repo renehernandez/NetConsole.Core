@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime.Tree;
 using NetConsole.Core.Extensions;
+using NetConsole.Core.Grammar;
 using NetConsole.Core.Interfaces;
 
-namespace NetConsole.Core.Grammar
+namespace NetConsole.Core.Managers
 {
     public class CommandExtractor : CommandGrammarBaseVisitor<ReturnInfo[]>
     {
@@ -15,7 +16,6 @@ namespace NetConsole.Core.Grammar
         private ICommandFactory _factory;
 
         private List<ParamInfo> _parameters; 
-
 
         public CommandExtractor(ICommandFactory factory)
         {

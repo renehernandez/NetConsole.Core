@@ -7,6 +7,7 @@ using Antlr4.Runtime.Tree;
 using NetConsole.Core.Commands;
 using NetConsole.Core.Factories;
 using NetConsole.Core.Grammar;
+using NetConsole.Core.Managers;
 using NUnit.Framework;
 
 namespace NetConsole.Core.Tests
