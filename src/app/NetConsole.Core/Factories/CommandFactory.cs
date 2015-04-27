@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NetConsole.Core.Exceptions;
 using NetConsole.Core.Extensions;
 using NetConsole.Core.Interfaces;
 
@@ -21,13 +22,16 @@ namespace NetConsole.Core.Factories
 
         public void Register<T>(T instance) where T : ICommand
         {
+            if(Contains(instance.Name))
+                throw new DuplicatedCommandNameException(instance.Name);
+
             _cache.Add(instance.Name, instance);
         }
 
         public ICommand Unregister(string cmdName)
         {
             if(!Contains(cmdName))
-                throw new Exception(string.Format("Unable to unregister {0} command because is not presented in the factory", cmdName));
+                throw new FailedUnregisterOperationException(cmdName);
 
             var cmd = _cache[cmdName];
             _cache.Remove(cmdName);
@@ -54,7 +58,7 @@ namespace NetConsole.Core.Factories
         public ICommand GetInstance(string cmdName)
         {
             if(!Contains(cmdName))
-                throw new Exception(string.Format("Command {0} is not present in the factory.", cmdName));
+                throw new UnregisteredCommandException(cmdName);
 
             return _cache[cmdName];
         }

@@ -77,8 +77,8 @@ namespace NetConsole.Core.Extensions
                 for (int i = 0; i < lastParamPosition; i++)
                     inputs[i] = paramsInfo[i].Value;
 
-                Type paramsType = parameters[lastParamPosition].ParameterType.GetElementType();
-                Array extra = Array.CreateInstance(paramsType, paramsInfo.Count - lastParamPosition);
+                var paramsType = parameters[lastParamPosition].ParameterType.GetElementType();
+                var extra = Array.CreateInstance(paramsType, paramsInfo.Count - lastParamPosition);
                 for (int i = 0; i < extra.Length; i++)
                     extra.SetValue(paramsInfo[i + lastParamPosition].Value, i);
 

@@ -41,6 +41,10 @@
   <ItemGroup>
     <Compile Include="Attributes\CommandAttribute.cs" />
     <Compile Include="Attributes\DefaultActionAttribute.cs" />
+    <Compile Include="Exceptions\CoreException.cs" />
+    <Compile Include="Exceptions\DuplicatedCommandNameException.cs" />
+    <Compile Include="Exceptions\FailedUnregisterOperationException.cs" />
+    <Compile Include="Exceptions\UnregisteredCommandException.cs" />
     <Compile Include="Grammar\CommandExtractor.cs" />
     <Compile Include="Commands\CloseCommand.cs" />
     <Compile Include="Commands\EchoCommand.cs" />
