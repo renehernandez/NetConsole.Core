@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using NetConsole.Core.Managers;
 using NUnit.Framework;
-using Rhino.Mocks;
 
 namespace NetConsole.Core.Tests
 {
