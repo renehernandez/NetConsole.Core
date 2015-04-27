@@ -39,7 +39,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attributes\CommandAttribute.cs" />
     <Compile Include="Attributes\DefaultActionAttribute.cs" />
     <Compile Include="Exceptions\CoreException.cs" />
     <Compile Include="Exceptions\DuplicatedCommandNameException.cs" />
