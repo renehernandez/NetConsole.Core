@@ -44,6 +44,7 @@
     <Compile Include="Exceptions\CoreException.cs" />
     <Compile Include="Exceptions\DuplicatedCommandNameException.cs" />
     <Compile Include="Exceptions\FailedUnregisterOperationException.cs" />
+    <Compile Include="Exceptions\NotInterfaceTypeException.cs" />
     <Compile Include="Exceptions\UnregisteredCommandException.cs" />
     <Compile Include="Managers\CommandExtractor.cs" />
     <Compile Include="Commands\CloseCommand.cs" />

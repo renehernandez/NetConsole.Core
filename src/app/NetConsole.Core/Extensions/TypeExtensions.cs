@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using NetConsole.Core.Exceptions;
 
 namespace NetConsole.Core.Extensions
 {
@@ -27,7 +28,7 @@ namespace NetConsole.Core.Extensions
             var it = typeof (T);
             
             if (!it.IsInterface) 
-                throw new Exception("Expected to be called with a generic T representing an interface");
+                throw new NotInterfaceTypeException();
 
             return iEnum.Where(t => !t.IsInterface && it.IsAssignableFrom(t)).ToList();
         }  

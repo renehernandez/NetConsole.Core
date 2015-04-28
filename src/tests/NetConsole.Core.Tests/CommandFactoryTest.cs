@@ -57,6 +57,17 @@ namespace NetConsole.Core.Tests
         }
 
         [Test]
+        public void Test_RegisterNotRegistrable()
+        {
+            _factory = new CommandFactory();;
+            var cmdNotRegistrable = new TestCommand();
+            _factory.Register(cmdNotRegistrable);
+
+            Assert.AreEqual(1, _factory.GetAll().Count());
+            Assert.AreEqual(cmdNotRegistrable, _factory.GetInstance(cmdNotRegistrable.Name));
+        }
+
+        [Test]
         public void Test_RegisterAll()
         {
             _factory = new CommandFactory();
