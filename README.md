@@ -9,13 +9,13 @@ For the simplest usage, go and use *CommandManager* class. It could load command
 
 Reading from string:
 ```csharp
-var importer = new CommandManager(); // Loads all commands automatically from assemblies in current domain
-var output = importer.GetOutputFromString("echo Hello World"); // Reading command from string
+var manager = new CommandManager(); // Loads all commands automatically from assemblies in current domain
+var output = manager.GetOutputFromString("echo Hello World"); // Reading command from string
 ```
 Or from file:
 ```csharp
-var importer = new CommandManager();
-var output = importer.GetOutputFromFile("C:\\Users\\Aegis\\Documents\\hello.txt"); // Reading command from a file
+var manager = new CommandManager();
+var output = manager.GetOutputFromFile("C:\\Users\\Aegis\\Documents\\hello.txt"); // Reading command from a file
 ```
 
 #### Working with output
@@ -32,7 +32,7 @@ It provides data as property like:
    - Represents the runtime type of the output property.
 
 #### Excluding commands from be registered
-By default  command classes with *NotRegistrable* class attribute will not be registered in the *CommandFactory* and *CommandManager* types.
+By default, command classes with *NotRegistrable* class attribute will not be registered in the *CommandFactory* and *CommandManager* types.
 
 **Notice:** You can always add a command instance to *CommandFactory*, even if it is marked with *NotRegistrable* attribute.
 
