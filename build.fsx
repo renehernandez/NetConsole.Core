@@ -96,7 +96,6 @@ Target "Develop" (fun _ ->
     ==> "Test"
     ==> "BuildZip"
     ==> "BuildPackage"
-    ==> "ReleasePackage"
     ==> "Master"
 
 // start build
