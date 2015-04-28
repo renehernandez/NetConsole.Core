@@ -59,7 +59,7 @@
     <Compile Include="Interfaces\ICommandFactory.cs" />
     <Compile Include="Interfaces\IParameterInfo.cs" />
     <Compile Include="Interfaces\IReturn.cs" />
-    <Compile Include="Managers\CommandImporter.cs" />
+    <Compile Include="Managers\CommandManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
