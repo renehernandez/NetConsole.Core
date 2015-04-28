@@ -1,3 +1,6 @@
+#### 0.2.1 - April 28 2015
+* Fixed bug in README doc
+
 #### 0.2.0 - April 28 2015
 * Added NotRegistrable attribute
 * Renamed CommandImporter to CommandManager
