@@ -11,18 +11,10 @@ using NUnit.Framework;
 namespace NetConsole.Core.Tests
 {
     [TestFixture]
-    public class CommandImporterTest
+    public class CommandManagerTest
     {
 
         private CommandManager _manager;
-
-        [NotRegistrable]
-        private class NotRegistrableCommand : ICommand
-        {
-            public int Status { get; private set; }
-            public string Name { get; private set; }
-            public string Overview { get; private set; }
-        }
 
         [SetUp]
         public void SetUp()

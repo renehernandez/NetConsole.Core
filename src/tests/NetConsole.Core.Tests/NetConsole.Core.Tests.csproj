@@ -44,8 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandFactoryTest.cs" />
-    <Compile Include="CommandImporterTest.cs" />
+    <Compile Include="CommandManagerTest.cs" />
     <Compile Include="GrammarTest.cs" />
+    <Compile Include="NotRegistrableCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -12,25 +12,6 @@ namespace NetConsole.Core.Tests
     public class CommandFactoryTest
     {
 
-        [NotRegistrable]
-        public class TestCommand : ICommand
-        {
-            public int Status
-            {
-                get { return 0; }
-            }
-
-            public string Name
-            {
-                get { return ""; }
-            }
-
-            public string Overview
-            {
-                get { return ""; }
-            }
-        }
-
         private ICommandFactory _factory;
         private ICommand _cmd;
 
@@ -60,7 +41,7 @@ namespace NetConsole.Core.Tests
         public void Test_RegisterNotRegistrable()
         {
             _factory = new CommandFactory();;
-            var cmdNotRegistrable = new TestCommand();
+            var cmdNotRegistrable = new NotRegistrableCommand();
             _factory.Register(cmdNotRegistrable);
 
             Assert.AreEqual(1, _factory.GetAll().Count());
