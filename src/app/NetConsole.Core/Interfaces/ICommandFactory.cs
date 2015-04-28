@@ -9,7 +9,7 @@ namespace NetConsole.Core.Interfaces
 
         ICommand Unregister(string cmdName);
 
-        void RegisterAll();
+        void RegisterAll(bool includeNotRegistrable = false);
 
         ICommand GetInstance(string cmdName);
 
