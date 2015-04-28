@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NetConsole.Core.Attributes;
 using NetConsole.Core.Exceptions;
 using NetConsole.Core.Extensions;
 using NetConsole.Core.Interfaces;
@@ -36,12 +37,16 @@ namespace NetConsole.Core.Factories
             return cmd;
         }
 
-        public void RegisterAll()
+        public void RegisterAll(bool includeNotRegistrable = false)
         {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-            foreach (var type in assemblies.SelectMany(asm => asm.GetLoadableTypes()).
-                GetTypesWithInterface<ICommand>())
+            var commandTypes = assemblies.SelectMany(asm => asm.GetLoadableTypes()).GetTypesWithInterface<ICommand>();
+
+            if (!includeNotRegistrable)
+                commandTypes = commandTypes.Where(cmd => cmd.GetCustomAttributes(typeof (NotRegistrableAttribute), true).Length == 0);
+
+            foreach (var type in commandTypes)
             {
                 Register((ICommand)Activator.CreateInstance(type));
             }

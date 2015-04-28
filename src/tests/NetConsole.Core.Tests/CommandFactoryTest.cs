@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using NetConsole.Core.Attributes;
 using NetConsole.Core.Commands;
 using NetConsole.Core.Exceptions;
 using NetConsole.Core.Factories;
@@ -10,6 +11,25 @@ namespace NetConsole.Core.Tests
     [TestFixture]
     public class CommandFactoryTest
     {
+
+        [NotRegistrable]
+        public class TestCommand : ICommand
+        {
+            public int Status
+            {
+                get { return 0; }
+            }
+
+            public string Name
+            {
+                get { return ""; }
+            }
+
+            public string Overview
+            {
+                get { return ""; }
+            }
+        }
 
         private ICommandFactory _factory;
         private ICommand _cmd;
@@ -34,6 +54,24 @@ namespace NetConsole.Core.Tests
         {
             Assert.AreEqual(_cmd, _factory.GetInstance(_cmd.Name));
             Assert.AreEqual(1, _factory.GetAll().Count());
+        }
+
+        [Test]
+        public void Test_RegisterAll()
+        {
+            _factory = new CommandFactory();
+
+            _factory.RegisterAll();
+            Assert.AreEqual(3, _factory.GetAll().Count());
+        }
+
+        [Test]
+        public void Test_RegisterAllWithNotRegistrable()
+        {
+            _factory = new CommandFactory();
+
+            _factory.RegisterAll(true);
+            Assert.AreEqual(4, _factory.GetAll().Count());
         }
 
         [Test]

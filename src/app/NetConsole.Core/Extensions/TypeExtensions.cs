@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace NetConsole.Core.Extensions
 {
-    public static class TypeLoadableExtensions
+    public static class TypeExtensions
     {
 
         public static IEnumerable<Type> GetLoadableTypes(this Assembly assembly)
@@ -30,6 +30,6 @@ namespace NetConsole.Core.Extensions
                 throw new Exception("Expected to be called with a generic T representing an interface");
 
             return iEnum.Where(t => !t.IsInterface && it.IsAssignableFrom(t)).ToList();
-        } 
+        }  
     }
 }

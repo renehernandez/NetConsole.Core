@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\DefaultActionAttribute.cs" />
+    <Compile Include="Attributes\NotRegistrableAttribute.cs" />
     <Compile Include="Exceptions\CoreException.cs" />
     <Compile Include="Exceptions\DuplicatedCommandNameException.cs" />
     <Compile Include="Exceptions\FailedUnregisterOperationException.cs" />
@@ -49,7 +50,7 @@
     <Compile Include="Commands\EchoCommand.cs" />
     <Compile Include="Commands\PromptCommand.cs" />
     <Compile Include="Extensions\CommandExtension.cs" />
-    <Compile Include="Extensions\TypeLoadableExtensions.cs" />
+    <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="Factories\CommandFactory.cs" />
     <Compile Include="Grammar\ParamInfo.cs" />
     <Compile Include="Grammar\ReturnInfo.cs" />
