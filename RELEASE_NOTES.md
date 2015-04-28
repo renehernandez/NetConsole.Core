@@ -1,3 +1,8 @@
+#### 0.2.0 - April 28 2015
+* Added NotRegistrable attribute
+* Renamed CommandImporter to CommandManager
+* Added more test for new functionality
+
 #### 0.1.1 - April 27 2015
 * Added CommandImporter for easier usage of grammar and commands
 * Removed unused classes and interfaces
