@@ -9,40 +9,36 @@ using NetConsole.Core.Interfaces;
 
 namespace NetConsole.Core.Managers
 {
-    public class CommandImporter
+    public class CommandManager
     {
         # region Private Fields
 
-        private ICommandFactory _factory;
         private CommandExtractor _extractor;
 
         # endregion
 
+        # region Public Properties
+
+        public ICommandFactory Factory { get; private set; }
+
+        # endregion
+
         # region Constructors
-        
-        public CommandImporter(): this(new CommandFactory())
+
+        public CommandManager(): this(new CommandFactory())
         {
         }
 
-        public CommandImporter(ICommandFactory factory)
+        public CommandManager(ICommandFactory factory)
         {
-            _factory = factory;
-            _extractor = new CommandExtractor(_factory);
+            Factory = factory;
+            _extractor = new CommandExtractor(Factory);
+            ImportAllCommands();
         }
 
         # endregion
 
         # region Public Methods
-
-        public void ImportAllCommands()
-        {
-            _factory.RegisterAll();
-        }
-
-        public void ImportCommand(ICommand command)
-        {
-            _factory.Register(command);
-        }
 
         public ReturnInfo[] GetOutputFromString(string input)
         {
@@ -64,6 +60,11 @@ namespace NetConsole.Core.Managers
             var parser = new CommandGrammarParser(tokens);
             var tree = parser.compile();
             return _extractor.Visit(tree);
+        }
+
+        private void ImportAllCommands()
+        {
+            Factory.RegisterAll();
         }
 
         # endregion

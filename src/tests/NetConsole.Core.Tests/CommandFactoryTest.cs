@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using NetConsole.Core.Attributes;
 using NetConsole.Core.Commands;
 using NetConsole.Core.Exceptions;
 using NetConsole.Core.Factories;
@@ -34,6 +35,35 @@ namespace NetConsole.Core.Tests
         {
             Assert.AreEqual(_cmd, _factory.GetInstance(_cmd.Name));
             Assert.AreEqual(1, _factory.GetAll().Count());
+        }
+
+        [Test]
+        public void Test_RegisterNotRegistrable()
+        {
+            _factory = new CommandFactory();;
+            var cmdNotRegistrable = new NotRegistrableCommand();
+            _factory.Register(cmdNotRegistrable);
+
+            Assert.AreEqual(1, _factory.GetAll().Count());
+            Assert.AreEqual(cmdNotRegistrable, _factory.GetInstance(cmdNotRegistrable.Name));
+        }
+
+        [Test]
+        public void Test_RegisterAll()
+        {
+            _factory = new CommandFactory();
+
+            _factory.RegisterAll();
+            Assert.AreEqual(3, _factory.GetAll().Count());
+        }
+
+        [Test]
+        public void Test_RegisterAllWithNotRegistrable()
+        {
+            _factory = new CommandFactory();
+
+            _factory.RegisterAll(true);
+            Assert.AreEqual(4, _factory.GetAll().Count());
         }
 
         [Test]

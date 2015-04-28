@@ -40,16 +40,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\DefaultActionAttribute.cs" />
+    <Compile Include="Attributes\NotRegistrableAttribute.cs" />
     <Compile Include="Exceptions\CoreException.cs" />
     <Compile Include="Exceptions\DuplicatedCommandNameException.cs" />
     <Compile Include="Exceptions\FailedUnregisterOperationException.cs" />
+    <Compile Include="Exceptions\NotInterfaceTypeException.cs" />
     <Compile Include="Exceptions\UnregisteredCommandException.cs" />
     <Compile Include="Managers\CommandExtractor.cs" />
     <Compile Include="Commands\CloseCommand.cs" />
     <Compile Include="Commands\EchoCommand.cs" />
     <Compile Include="Commands\PromptCommand.cs" />
     <Compile Include="Extensions\CommandExtension.cs" />
-    <Compile Include="Extensions\TypeLoadableExtensions.cs" />
+    <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="Factories\CommandFactory.cs" />
     <Compile Include="Grammar\ParamInfo.cs" />
     <Compile Include="Grammar\ReturnInfo.cs" />
@@ -57,7 +59,7 @@
     <Compile Include="Interfaces\ICommandFactory.cs" />
     <Compile Include="Interfaces\IParameterInfo.cs" />
     <Compile Include="Interfaces\IReturn.cs" />
-    <Compile Include="Managers\CommandImporter.cs" />
+    <Compile Include="Managers\CommandManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
