@@ -1,3 +1,7 @@
+#### 0.2.2 - April 29 2015
+* Added interface ICommandManager
+* Deleted unused CloseCommand example
+
 #### 0.2.1 - April 28 2015
 * Fixed bug in README doc
 
