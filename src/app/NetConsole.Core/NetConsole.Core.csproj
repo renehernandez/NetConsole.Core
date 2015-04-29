@@ -46,8 +46,8 @@
     <Compile Include="Exceptions\FailedUnregisterOperationException.cs" />
     <Compile Include="Exceptions\NotInterfaceTypeException.cs" />
     <Compile Include="Exceptions\UnregisteredCommandException.cs" />
+    <Compile Include="Interfaces\ICommandManager.cs" />
     <Compile Include="Managers\CommandExtractor.cs" />
-    <Compile Include="Commands\CloseCommand.cs" />
     <Compile Include="Commands\EchoCommand.cs" />
     <Compile Include="Commands\PromptCommand.cs" />
     <Compile Include="Extensions\CommandExtension.cs" />
