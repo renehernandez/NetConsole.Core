@@ -54,7 +54,7 @@ namespace NetConsole.Core.Tests
             _factory = new CommandFactory();
 
             _factory.RegisterAll();
-            Assert.AreEqual(3, _factory.GetAll().Count());
+            Assert.AreEqual(2, _factory.GetAll().Count());
         }
 
         [Test]
@@ -63,7 +63,7 @@ namespace NetConsole.Core.Tests
             _factory = new CommandFactory();
 
             _factory.RegisterAll(true);
-            Assert.AreEqual(4, _factory.GetAll().Count());
+            Assert.AreEqual(3, _factory.GetAll().Count());
         }
 
         [Test]
