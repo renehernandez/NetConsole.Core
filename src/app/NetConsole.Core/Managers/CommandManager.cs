@@ -9,7 +9,7 @@ using NetConsole.Core.Interfaces;
 
 namespace NetConsole.Core.Managers
 {
-    public class CommandManager
+    public class CommandManager : ICommandManager
     {
         # region Private Fields
 

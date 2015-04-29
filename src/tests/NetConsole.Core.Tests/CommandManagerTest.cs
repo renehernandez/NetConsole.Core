@@ -25,7 +25,7 @@ namespace NetConsole.Core.Tests
         [Test]
         public void Test_CommandManagerNotImportNotRegistrable()
         {
-            Assert.AreEqual(3, _manager.Factory.GetAll().Count());
+            Assert.AreEqual(2, _manager.Factory.GetAll().Count());
         }
 
         [Test]
