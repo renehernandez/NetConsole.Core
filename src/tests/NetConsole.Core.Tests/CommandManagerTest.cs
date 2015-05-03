@@ -52,5 +52,50 @@ namespace NetConsole.Core.Tests
             Assert.AreEqual(1, output[0].Status);
             Assert.AreEqual("Command not present in factory.", output[0].Output);
         }
+
+        [Test]
+        public void Test_BailAtFirstErrorWithoutMatchingAnythingAfter()
+        {
+            // Act
+            var output = _manager.GetOutputFromString("^^ echo blackd");
+
+            // Assert
+            Assert.AreEqual(1, output.Length);
+            Assert.AreEqual(1, output[0].Status);
+        }
+
+        [Test]
+        public void Test_GetErrorOutputFromEmptyString()
+        {
+            // Act
+            var output = _manager.GetOutputFromString("");
+
+            // Assert
+            Assert.AreEqual(1, output.Length);
+            Assert.AreEqual(1, output[0].Status);
+        }
+
+        [Test]
+        public void Test_ParseNothingIfSyntacticError()
+        {
+            var output = _manager.GetOutputFromString("echo hello world | prompt set ^^ echo again");
+
+            Assert.AreEqual(1, output.Length);
+            Assert.AreEqual(1, output.Last().Status);
+        }
+
+        [Test]
+        public void Test_ThrowArgumentNullExceptionGetOutputFromString()
+        {
+            // Assert
+            Assert.Throws<ArgumentNullException>(() => _manager.GetOutputFromString(null));
+        }
+
+        [Test]
+        public void Test_ThrowArgumentNullExceptionGetOutputFromFile()
+        {
+            // Assert
+            Assert.Throws<ArgumentNullException>(() => _manager.GetOutputFromFile(null));
+        }
     }
 }

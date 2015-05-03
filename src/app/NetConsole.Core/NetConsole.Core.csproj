@@ -41,10 +41,13 @@
   <ItemGroup>
     <Compile Include="Attributes\DefaultActionAttribute.cs" />
     <Compile Include="Attributes\NotRegistrableAttribute.cs" />
+    <Compile Include="Errors\ParserErrorListener.cs" />
+    <Compile Include="Errors\LexerErrorListener.cs" />
     <Compile Include="Exceptions\CoreException.cs" />
     <Compile Include="Exceptions\DuplicatedCommandNameException.cs" />
     <Compile Include="Exceptions\FailedUnregisterOperationException.cs" />
     <Compile Include="Exceptions\NotInterfaceTypeException.cs" />
+    <Compile Include="Exceptions\RuntimeException.cs" />
     <Compile Include="Exceptions\UnregisteredCommandException.cs" />
     <Compile Include="Interfaces\ICommandManager.cs" />
     <Compile Include="Managers\CommandExtractor.cs" />
