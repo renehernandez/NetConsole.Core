@@ -58,7 +58,7 @@
     <Compile Include="Interfaces\ICommand.cs" />
     <Compile Include="Interfaces\ICommandFactory.cs" />
     <Compile Include="Interfaces\IParameterInfo.cs" />
-    <Compile Include="Interfaces\IReturn.cs" />
+    <Compile Include="Interfaces\IReturnInfo.cs" />
     <Compile Include="Managers\CommandManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

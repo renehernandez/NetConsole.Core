@@ -25,17 +25,32 @@ namespace NetConsole.Core.Tests
         [Test]
         public void Test_CommandManagerNotImportNotRegistrable()
         {
+            // Assert
             Assert.AreEqual(2, _manager.Factory.GetAll().Count());
         }
 
         [Test]
-        public void Test_GetOutputFromString()
+        public void Test_GetOutputFromStringSuccess()
         {
+            // Act
             var output = _manager.GetOutputFromString("echo:echoed unique trial");
 
+            // Assert
             Assert.AreEqual(1, output.Length);
             Assert.AreEqual(0, output[0].Status);
             Assert.AreEqual("unique trial", output[0].Output);
+        }
+
+        [Test]
+        public void Test_GetErrorOutputFromString()
+        {
+            // Act
+            var output = _manager.GetOutputFromString("hello");
+
+            // Assert
+            Assert.AreEqual(1, output.Length);
+            Assert.AreEqual(1, output[0].Status);
+            Assert.AreEqual("Command not present in factory.", output[0].Output);
         }
     }
 }
