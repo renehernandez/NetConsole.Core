@@ -8,8 +8,14 @@ namespace NetConsole.Core.Exceptions
     public class CoreException : Exception
     {
 
-        public CoreException(string msg):base(msg)
+        public CoreException(string msg) : base(msg)
         {
+
+        }
+
+        public CoreException(string message, Exception e) : base(message, e)
+        {
+            
         }
 
     }

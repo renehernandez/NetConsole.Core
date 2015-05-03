@@ -21,9 +21,7 @@ namespace NetConsole.Core.Managers
         {
             _factory = factory;
             _parameters = new List<ParamInfo>();
-
             LastOperationStatus = 0;
-
         }
 
         # region Public Methods
