@@ -47,7 +47,6 @@
     <Compile Include="Exceptions\DuplicatedCommandNameException.cs" />
     <Compile Include="Exceptions\FailedUnregisterOperationException.cs" />
     <Compile Include="Exceptions\NotInterfaceTypeException.cs" />
-    <Compile Include="Exceptions\RuntimeException.cs" />
     <Compile Include="Exceptions\UnregisteredCommandException.cs" />
     <Compile Include="Interfaces\ICommandManager.cs" />
     <Compile Include="Managers\CommandExtractor.cs" />
