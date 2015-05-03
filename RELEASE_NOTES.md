@@ -1,3 +1,7 @@
+#### 0.3.0 - May 03 2015
+* Added support for early bail error strategy
+* Fixed some test and added several ones
+
 #### 0.2.2 - April 29 2015
 * Added interface ICommandManager
 * Deleted unused CloseCommand example
