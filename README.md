@@ -2,6 +2,33 @@
 
 NetConsole.Core is a library who aims to serve as a basis for developing projects that uses command-like syntax.
 
+#### Defining commands
+To establish a convention, a **command** is user-defined type that implements *ICommand* interface in NetConsole.Core library.
+
+Now, a **command** can have several actions to be executed and the pattern usage would be like this:
+```
+commandName:actionName parametersList
+```
+So, when using the **echo** command that it is provided with the library, the usage would be:
+```csharp
+echo:echoed Hello World
+````
+For more information about the syntax check the [grammar file](https://github.com/renehernandez/NetConsole.Core/blob/master/src/app/NetConsole.Core/Grammar/CommandGrammar.g4)
+
+#### Defining actions
+An action would be by definition, any public instance method in the user-defined type that implements *ICommand* interface.
+This lets room to define another types of methods (static, private, etc.) and hiding them from being used as action for the command.
+
+It is also possible to set an action as default.
+Just apply the *DefaultAction* method attribute to the selected action and then if only the command is written the default action will be invoked.
+Following with the previous example, we could rewrite it like:
+```csharp
+echo Hello World
+```
+**Notice:**
+* This example will work because echoed action has *DefaultAction* attribute applied on it.
+* It is possible to set one default action at most per command.
+
 ## Basic Usage
 For the simplest usage, go and use *CommandManager* class. It could load commands from raw string or a file using one of the following methods defined in it and returns an output from the command execution.
 
@@ -46,4 +73,4 @@ Install the latest version from [NuGet] (https://www.nuget.org/packages/NetConso
 In lieu of a formal style guide, please take care to follow the existing code style. Add unit tests for any new or changed functionality. Use FAKE and paket to handle automation and dependencies management.
 
 ## Release History
-Checks [Release Notes](https://github.com/renehernandez/NetConsole.Core/blob/develop/RELEASE_NOTES.md) to see the changes history
+Checks [Release Notes](https://github.com/renehernandez/NetConsole.Core/blob/master/RELEASE_NOTES.md) to see the changes history
