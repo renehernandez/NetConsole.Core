@@ -39,16 +39,34 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\ActionForOptionAttribute.cs" />
+    <Compile Include="Attributes\CommandHelpAttribute.cs" />
     <Compile Include="Attributes\DefaultActionAttribute.cs" />
+    <Compile Include="Attributes\ActionHelpAttribute.cs" />
     <Compile Include="Attributes\NotRegistrableAttribute.cs" />
+    <Compile Include="Attributes\OptionHelpAttribute.cs" />
+    <Compile Include="Attributes\ParamHelpAttribute.cs" />
+    <Compile Include="Commands\BaseCommand.cs" />
+    <Compile Include="Commands\Option.cs" />
+    <Compile Include="Commands\OptionAccessor.cs" />
     <Compile Include="Errors\ParserErrorListener.cs" />
     <Compile Include="Errors\LexerErrorListener.cs" />
     <Compile Include="Exceptions\CoreException.cs" />
+    <Compile Include="Exceptions\DeclarableOnlyOptionException.cs" />
     <Compile Include="Exceptions\DuplicatedCommandNameException.cs" />
+    <Compile Include="Exceptions\DuplicatedCommandOptionValueException.cs" />
     <Compile Include="Exceptions\FailedUnregisterOperationException.cs" />
     <Compile Include="Exceptions\NotInterfaceTypeException.cs" />
+    <Compile Include="Exceptions\NullCommandInstanceException.cs" />
+    <Compile Include="Exceptions\OptionValueNotSetException.cs" />
+    <Compile Include="Exceptions\UndefinedCommandOption.cs" />
     <Compile Include="Exceptions\UnregisteredCommandException.cs" />
+    <Compile Include="Extensions\HelpInfo.cs" />
+    <Compile Include="Grammar\CommandActionInfo.cs" />
+    <Compile Include="Interfaces\ICommandInfo.cs" />
     <Compile Include="Interfaces\ICommandManager.cs" />
+    <Compile Include="Interfaces\IHelpInfo.cs" />
+    <Compile Include="Interfaces\IOptionAccessor.cs" />
     <Compile Include="Managers\CommandExtractor.cs" />
     <Compile Include="Commands\EchoCommand.cs" />
     <Compile Include="Commands\PromptCommand.cs" />
@@ -71,6 +89,10 @@
       <Listener>True</Listener>
       <Visitor>True</Visitor>
     </Antlr4>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="paket.references" />
+    <None Include="paket.template" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

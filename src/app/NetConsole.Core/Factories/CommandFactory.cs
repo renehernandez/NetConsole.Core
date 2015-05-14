@@ -20,6 +20,9 @@ namespace NetConsole.Core.Factories
 
         public void Register<T>(T instance) where T : ICommand
         {
+            if(instance == null)
+                throw new NullCommandInstanceException();
+
             if(Contains(instance.Name))
                 throw new DuplicatedCommandNameException(instance.Name);
 
@@ -46,7 +49,7 @@ namespace NetConsole.Core.Factories
             if (!includeNotRegistrable)
                 commandTypes = commandTypes.Where(cmd => cmd.GetCustomAttributes(typeof (NotRegistrableAttribute), true).Length == 0);
 
-            foreach (var type in commandTypes)
+            foreach (var type in commandTypes.Where(t => !t.IsAbstract))
             {
                 Register((ICommand)Activator.CreateInstance(type));
             }

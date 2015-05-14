@@ -5,18 +5,8 @@ using NetConsole.Core.Interfaces;
 
 namespace NetConsole.Core.Commands
 {
-    public class EchoCommand : ICommand
+    public class EchoCommand : BaseCommand
     {
-
-        # region Public 
-
-        public int Status { get; private set; }
-
-        public string Name { get; private set; }
-
-        public string Overview { get; private set; }
-
-        # endregion
 
         # region Constructors
 
@@ -32,6 +22,7 @@ namespace NetConsole.Core.Commands
         # region Public Methods
 
         [DefaultAction]
+        [ActionHelp("Redirects the standard input to the standard output int the console")]
         public string Echoed(params string[] input)
         {
             string output;
@@ -47,14 +38,6 @@ namespace NetConsole.Core.Commands
             }
             return output;
         }
-
-        //[DefaultAction]
-        //public string Echoed(string input)
-        //{
-        //    string output = input;
-        //    Status = 0;
-        //    return output;
-        //}
 
         # endregion
     }

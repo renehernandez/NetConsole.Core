@@ -2,6 +2,9 @@
 {
     public interface ICommand
     {
+
+        IOptionAccessor Accessor { get; }
+
         int Status { get; }
 
         string Name { get; }

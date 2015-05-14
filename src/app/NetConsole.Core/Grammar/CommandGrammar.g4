@@ -15,9 +15,10 @@ instruction
 	;
 
 atomic_instruction
-	:	command								# SingleCommand
-	|	command ( PIPE command_header)+		# PipeCommand
-	|	command REDIRECT (STRING | ID)		# RedirectCommand
+	:	command										# SingleCommand
+	|	command ( PIPE command_header)+				# PipeCommand
+	|	command REDIRECT st = (STRING | ID)			# RedirectCommand
+	|	command_header INPUT st = (STRING | ID)		# InputCommand
 	;
 
 command 
@@ -31,24 +32,34 @@ list_params
 	;
 
 command_param
-	:	st = (STRING | ID)	# StringParam
-	|	INT					# IntParam 
-	|	DOUBLE				# DoubleParam
-	|	BOOL				# BoolParam
+	:	st = (STRING | ID)								# StringParam
+	|	INT												# IntParam 
+	|	DOUBLE											# DoubleParam
+	|	BOOL											# BoolParam
+	|	DOUBLE_HYPHEN ID (EQUAL val = option_value)?	# OptionParam
 	;
 
+option_value
+	:	st = (STRING | ID)		# StringOption
+	|	DOUBLE					# DoubleOption
+	|	INT						# IntOption
+	|	BOOL					# BoolOption
+	;
 /*
  * Lexer Rules
  */
 
-AND         : '&&';
-OR          : '||';
-PIPE        : '|';
-REDIRECT    : '>';
-DOT         : '.';
-COLON		: ':';
-UNDERSCORE  : '_';
-MINUS       : '-';
+AND				: '&&';
+OR				: '||';
+PIPE			: '|';
+REDIRECT		: '>';
+INPUT			: '<';
+DOT				: '.';
+COLON			: ':';
+UNDERSCORE		: '_';
+HYPHEN			: '-';
+DOUBLE_HYPHEN   : '--';
+EQUAL			: '=';
 
 fragment
 	DIGIT : [0-9];
@@ -59,12 +70,13 @@ fragment
 fragment
 	QUOTES : '"';
 
-DOUBLE : DIGIT+ DOT DIGIT+;
-INT : DIGIT+ ;
+DOUBLE : HYPHEN? DIGIT+ DOT DIGIT+;
+
+INT : HYPHEN? DIGIT+ ;
 
 BOOL : 'true' | 'false';
 
-ID	: LETTER (LETTER | DIGIT | UNDERSCORE | MINUS )*;
+ID	: LETTER (LETTER | DIGIT | UNDERSCORE | HYPHEN )*;
 
 STRING : QUOTES .*? QUOTES;
 

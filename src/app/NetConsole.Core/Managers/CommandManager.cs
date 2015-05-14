@@ -63,7 +63,8 @@ namespace NetConsole.Core.Managers
 
         private ReturnInfo[] GetOutput(CommandGrammarLexer lexer)
         {
-            var output = new ReturnInfo[0];
+            var output = new List<ReturnInfo>();
+            object result;
             try
             {
                 lexer.RemoveErrorListeners();
@@ -74,8 +75,23 @@ namespace NetConsole.Core.Managers
                 parser.RemoveErrorListeners();
                 parser.AddErrorListener(ParserErrorListener.Instance);
                 var tree = parser.compile();
-                output = _extractor.Visit(tree);
-                return output;
+                var commands = _extractor.Visit(tree);
+
+                foreach (var commandInfo in commands)
+                {
+                    if (commandInfo.Status == 0)
+                    {
+                        result = commandInfo.Perform();
+                        output.Add(new ReturnInfo(result, commandInfo.Command.Status));
+                    }
+                    else
+                    {
+                        output.Add(new ReturnInfo(commandInfo.Message, commandInfo.Status));
+                    }
+                    
+                }
+
+                return output.ToArray();
             }
             catch (ParseCanceledException e)
             {

@@ -4,22 +4,12 @@ using NetConsole.Core.Interfaces;
 namespace NetConsole.Core.Commands
 {
 
-    public class PromptCommand : ICommand
+    public class PromptCommand : BaseCommand
     {
 
         # region Private Locations
 
         private string _prompt;
-
-        # endregion
-
-        # region Properties
-
-        public int Status { get; private set; }
-
-        public string Name { get; private set; }
-
-        public string Overview { get; private set; }
 
         # endregion
 
@@ -38,11 +28,14 @@ namespace NetConsole.Core.Commands
         # region Public Methods
 
         [DefaultAction]
+        [ActionHelp("Retrieves the current prompt text to be used in the console")]
         public string Get()
         {
             return _prompt;
         }
 
+        [ActionHelp("Change the prompt text and returns it")]
+        [ParamHelp("prompt", "Store the new value to be set as prompt text")]
         public string Set(string prompt)
         {
             _prompt = prompt;

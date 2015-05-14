@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using NetConsole.Core.Attributes;
 using NetConsole.Core.Grammar;
 using NetConsole.Core.Interfaces;
@@ -11,14 +12,30 @@ namespace NetConsole.Core.Extensions
     public static class CommandExtension
     {
 
-        public static MethodInfo HasMatch<T>(this T instance, string action = null, params string[] parametersTypes) where T : ICommand
+        public static MethodInfo FindAction<T>(this T instance, string actionName) where T : ICommand
+        {
+            var type = instance.GetType();
+            var methodsInfo = type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+
+            return methodsInfo.SingleOrDefault(m => m.Name.ToLower() == actionName);   
+        }
+
+        public static MethodInfo[] FindActions<T>(this T instance) where T : ICommand
+        {
+            var type = instance.GetType();
+            var methodsInfo = type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+
+            return methodsInfo;
+        }
+
+        public static MethodInfo FindAction<T>(this T instance, string actionName = null, params string[] parametersTypes) where T : ICommand
         {
             var type = instance.GetType();
             var methodsInfo = type.GetMethods(BindingFlags.Public | BindingFlags.Instance);
 
-            if (action != null)
+            if (actionName != null)
             {
-                var info = methodsInfo.SingleOrDefault(m => m.Name.ToLower() == action);
+                var info = methodsInfo.SingleOrDefault(m => m.Name.ToLower() == actionName);
                 return info != null && CheckMethodParameters(info, parametersTypes) ? info : null;
             }
 
@@ -90,6 +107,17 @@ namespace NetConsole.Core.Extensions
             }
 
             return info.Invoke(instance, inputs);
+        }
+
+        public static MethodInfo GetActionForOption<T>(this T instance, string option) where T : ICommand
+        {
+            var type = instance.GetType();
+
+            return type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | 
+                BindingFlags.FlattenHierarchy | BindingFlags.Static | BindingFlags.Instance)
+                .First(m =>
+                    m.GetCustomAttributes(true).OfType<ActionForOptionAttribute>()
+                        .Any(at => at.Name.Equals(option)));
         }
     }
 }
