@@ -99,6 +99,7 @@ namespace NetConsole.Core.Tests
             // Act
             var outputs = Connect("echo && prompt");
 
+            // Assert
             Assert.AreEqual(1, outputs.Length);
             Assert.AreEqual(1, _extractor.LastOperationStatus);
             Assert.AreEqual(1, outputs[0].Status);
@@ -112,29 +113,61 @@ namespace NetConsole.Core.Tests
 
             Assert.AreEqual(2, outputs.Length);
             Assert.AreEqual(0, _extractor.LastOperationStatus);
-            //Assert.AreEqual("There is not any compatible action for this command.", outputs[0].Output);
-            //Assert.AreEqual("\"Previous command was wrong!!\"", outputs[1].Output);
+            Assert.AreEqual("There is not any compatible action for this command.", outputs[0].Message);
+            Assert.AreEqual(GetActionName((EchoCommand cmd) => cmd.Echoed(null)), outputs[1].Action.Name);
         }
 
         [Test]
         public void Test_PipeOperator()
         {
+            // Act
             var outputs = Connect("prompt : set amour | echo : echoed");
 
+            // Assert
             Assert.AreEqual(2, outputs.Length);
             Assert.AreEqual(0, _extractor.LastOperationStatus);
-            //Assert.AreEqual("amour", outputs[1].Output);
+            Assert.AreEqual(GetActionName((PromptCommand c) => c.Set(null)), outputs[0].Action.Name);
+            Assert.AreEqual(GetActionName((EchoCommand c) => c.Echoed(null)), outputs[1].Action.Name);
         }
 
         [Test]
         public void Test_DoublePipe()
         {
+            // Act
             var outputs = Connect("echo les amour | echo : echoed | prompt : set");
 
+            // Asert
             Assert.AreEqual(3, outputs.Length);
             Assert.AreEqual(0, _extractor.LastOperationStatus);
-            //Assert.AreEqual("les amour", outputs[1].Output);
-            //Assert.AreEqual("les amour", outputs[2].Output);
+            Assert.AreEqual(GetActionName((EchoCommand c) => c.Echoed(null)), outputs[0].Action.Name);
+            Assert.AreEqual(GetActionName((EchoCommand c) => c.Echoed(null)), outputs[1].Action.Name);
+            Assert.AreEqual(GetActionName((PromptCommand c) => c.Set(null)), outputs[2].Action.Name);
+        }
+
+        [Test]
+        public void Test_HelpOption()
+        {
+            // Act
+            var output = Connect("echo --help");
+
+            // Assert
+            Assert.NotNull(output);
+            Assert.AreEqual(1, output.Length);
+            Assert.AreEqual(0, output[0].Status);
+            Assert.AreEqual("Help", output[0].Action.Name);
+        }
+
+        [Test]
+        public void Test_ListOption()
+        {
+            // Act
+            var output = Connect("prompt --list");
+
+            // Assert
+            Assert.NotNull(output);
+            Assert.AreEqual(1, output.Length);
+            Assert.AreEqual(0, output[0].Status);
+            Assert.AreEqual("List", output[0].Action.Name);
         }
 
         private CommandActionInfo[] Connect(string input)
@@ -146,8 +179,7 @@ namespace NetConsole.Core.Tests
             return _extractor.Visit(tree);
         }
 
-
-        public static string GetActionName<T, TU>(Expression<Func<T, TU>> expression)
+        private static string GetActionName<T, TU>(Expression<Func<T, TU>> expression)
         {
             var method = expression.Body as MethodCallExpression;
             if (method != null)
