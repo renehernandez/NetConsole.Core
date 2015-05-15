@@ -125,10 +125,9 @@ namespace NetConsole.Core.Tests
             var outputs = Connect("prompt : set amour | echo : echoed");
 
             // Assert
-            Assert.AreEqual(2, outputs.Length);
+            Assert.AreEqual(1, outputs.Length);
             Assert.AreEqual(0, _extractor.LastOperationStatus);
-            Assert.AreEqual(ReflectorHelper.GetActionName((PromptCommand c) => c.Set(null)), outputs[0].Name);
-            Assert.AreEqual(ReflectorHelper.GetActionName((EchoCommand c) => c.Echoed(null)), outputs[1].Name);
+            Assert.AreEqual(ReflectorHelper.GetActionName((EchoCommand c) => c.Echoed(null)), outputs[0].Name);
         }
 
         [Test]
@@ -138,11 +137,21 @@ namespace NetConsole.Core.Tests
             var outputs = Connect("echo true | echo : echoed | prompt : set");
 
             // Asert
-            Assert.AreEqual(3, outputs.Length);
+            Assert.AreEqual(1, outputs.Length);
             Assert.AreEqual(0, _extractor.LastOperationStatus);
-            Assert.AreEqual(ReflectorHelper.GetActionName((EchoCommand c) => c.Echoed(null)), outputs[0].Name);
-            Assert.AreEqual(ReflectorHelper.GetActionName((EchoCommand c) => c.Echoed(null)), outputs[1].Name);
-            Assert.AreEqual(ReflectorHelper.GetActionName((PromptCommand c) => c.Set(null)), outputs[2].Name);
+            Assert.AreEqual(ReflectorHelper.GetActionName((PromptCommand c) => c.Set(null)), outputs[0].Name);
+        }
+
+        [Test]
+        public void Test_PipeFail()
+        {
+            // Act
+            var outputs = Connect("prompt:avi hello | echo:echoed");
+
+            // Assert
+            Assert.AreEqual(1, outputs.Length);
+            Assert.AreEqual(1, outputs[0].Status);
+            Assert.AreEqual(1, _extractor.LastOperationStatus);
         }
 
         [Test]

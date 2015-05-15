@@ -39,6 +39,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actions\AndAction.cs" />
+    <Compile Include="Actions\OrAction.cs" />
+    <Compile Include="Actions\PipeAction.cs" />
     <Compile Include="Attributes\ActionForOptionAttribute.cs" />
     <Compile Include="Attributes\CommandHelpAttribute.cs" />
     <Compile Include="Attributes\DefaultActionAttribute.cs" />

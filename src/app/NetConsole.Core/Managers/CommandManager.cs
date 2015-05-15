@@ -81,7 +81,7 @@ namespace NetConsole.Core.Managers
                 {
                     if (commandInfo.Status == 0)
                     {
-                        result = commandInfo.Perform();
+                        result = commandInfo.Perform()[0];
                         output.Add(new ReturnInfo(result, commandInfo.Command.Status));
                     }
                     else

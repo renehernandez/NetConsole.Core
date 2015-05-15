@@ -39,10 +39,11 @@ namespace NetConsole.Core.Managers
         {
             var outputs = new List<CommandAction>();
             foreach (var instruction in context.instruction())
-            {
                 outputs.AddRange(this.Visit(instruction));
-            }
-            
+
+            if (outputs.Last().Status != 0)
+                LastOperationStatus = outputs.Last().Status;
+
             return outputs.ToArray();
         }
 
@@ -92,22 +93,25 @@ namespace NetConsole.Core.Managers
 
         public override CommandAction[] VisitPipeCommand(CommandGrammarParser.PipeCommandContext context)
         {
-            CommandAction[] leftCommand = this.Visit(context.command());
+            CommandAction[] initialOutput = this.Visit(context.command());
 
-            var outputs = new List<CommandAction>(leftCommand);
+            if (initialOutput[0].Status != 0)
+                return initialOutput;
+
+            var lastOutput = initialOutput[0];
 
             foreach (var header in context.command_header())
             {
                 this.Visit(header);
+                _parameters = new List<object> { lastOutput.Perform()[0] };
 
-                _parameters = new List<object> { outputs.Last().Perform() };
-                var result = ExtractCommand(header);
-                outputs.Add(result);
-                if (result.Status != 0)
+                if (lastOutput.Status != 0)
                     break;
+
+                lastOutput = ExtractCommand(header); 
             }
 
-            return outputs.ToArray();
+            return new[] {lastOutput};
         }
 
         public override CommandAction[] VisitRedirectCommand(CommandGrammarParser.RedirectCommandContext context)

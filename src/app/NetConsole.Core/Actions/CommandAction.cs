@@ -17,15 +17,15 @@ namespace NetConsole.Core.Actions
 
         public int Status { get; private set; }
 
-        public MethodInfo[] Body { get; private set; }
+        public MethodInfo Body { get; private set; }
         
         public string Message { get; private set; }
 
-        public object[] Arguments { get; private set; }
+        public object[] Arguments { get; set; }
 
         public string Name
         {
-            get { return Body[0].Name; }
+            get { return Body.Name; }
         }
 
         # endregion
@@ -39,16 +39,16 @@ namespace NetConsole.Core.Actions
             if (status == 0 && action != null)
             {
                 Command = cmd;
-                Body = new[] {action};
+                Body = action;
                 Arguments = args;
             }
         }
 
-        public CommandAction(ICommand cmd, MethodInfo action, object[] args)
+        public CommandAction(ICommand cmd, MethodInfo action, object[] args = null)
         {
-            Message = "Action for script";
+            Message = "Command action for script";
             Status = 0;
-            Body = new []{action};
+            Body = action;
             Arguments = args;
             Command = cmd;
         }
@@ -57,11 +57,11 @@ namespace NetConsole.Core.Actions
 
         # region Public Methods
 
-        public object Perform()
+        public object[] Perform()
         {
-            var output = Command.Perform(Body[0], Arguments);
+            var output = Command.Perform(Body, Arguments);
             Status = Command.Status;
-            return output;
+            return new[] {output};
         }
 
         # endregion

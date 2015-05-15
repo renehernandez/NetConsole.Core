@@ -114,8 +114,8 @@ namespace NetConsole.Core.Tests
             var output = _manager.GetOutputFromString("prompt --list | echo");
 
             // Assert
-            Assert.AreEqual(2, output.Length);
-            Assert.AreEqual(0, output[1].Status);
+            Assert.AreEqual(1, output.Length);
+            Assert.AreEqual(0, output[0].Status);
         }
 
         [Test]
