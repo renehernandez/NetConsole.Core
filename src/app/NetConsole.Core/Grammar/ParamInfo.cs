@@ -13,10 +13,10 @@ namespace NetConsole.Core.Grammar
         
         public object Value { get; private set; }
 
-        public ParamInfo(object value)
+        public ParamInfo(object value, Type type = null)
         {
             Value = value;
-            Type = value.GetType().Name;
+            Type = type != null ? type.Name : value.GetType().Name;
         }
 
         public override string ToString()

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Antlr4.Runtime.Tree;
 using NetConsole.Core.Extensions;
 using NetConsole.Core.Grammar;
@@ -16,16 +17,18 @@ namespace NetConsole.Core.Managers
 
         private ICommandFactory _factory;
 
-        private List<ParamInfo> _parameters;
+        private List<object> _parameters;
 
         private Dictionary<string, object> _options;
 
-        private object _currentOptionValue; 
+        private object _currentOptionValue;
+
+        private string _currentString;
 
         public CommandExtractor(ICommandFactory factory)
         {
             _factory = factory;
-            _parameters = new List<ParamInfo>();
+            _parameters = new List<object>();
             LastOperationStatus = 0;
         }
 
@@ -73,7 +76,7 @@ namespace NetConsole.Core.Managers
 
         public override CommandActionInfo[] VisitCommand(CommandGrammarParser.CommandContext context)
         {
-            _parameters = new List<ParamInfo>();
+            _parameters = new List<object>();
             _options = new Dictionary<string, object>();
             this.Visit(context.command_header());
             this.Visit(context.list_params());
@@ -91,7 +94,7 @@ namespace NetConsole.Core.Managers
             {
                 this.Visit(header);
 
-                _parameters = new List<ParamInfo> { new ParamInfo(outputs.Last().Action.ReturnType.Name) };
+                _parameters = new List<object> { outputs.Last().Perform() };
                 var result = ExtractCommand(header);
                 outputs.Add(result);
                 if (result.Status != 0)
@@ -113,34 +116,20 @@ namespace NetConsole.Core.Managers
 
         public override CommandActionInfo[] VisitStringParam(CommandGrammarParser.StringParamContext context)
         {
-            _parameters.Add(new ParamInfo(context.st.Text));
+            this.Visit(context.text());
+            _parameters.Add(_currentString);
             return base.VisitStringParam(context);
-        }
-
-        public override CommandActionInfo[] VisitIntParam(CommandGrammarParser.IntParamContext context)
-        {
-            _parameters.Add(new ParamInfo(int.Parse(context.INT().ToString())));
-            return base.VisitIntParam(context);
-        }
-
-        public override CommandActionInfo[] VisitDoubleParam(CommandGrammarParser.DoubleParamContext context)
-        {
-            _parameters.Add(new ParamInfo(Double.Parse(context.DOUBLE().ToString())));
-            return base.VisitDoubleParam(context);
-        }
-
-        public override CommandActionInfo[] VisitBoolParam(CommandGrammarParser.BoolParamContext context)
-        {
-            _parameters.Add(new ParamInfo(bool.Parse(context.BOOL().ToString())));
-            return base.VisitBoolParam(context);
         }
 
         public override CommandActionInfo[] VisitOptionParam(CommandGrammarParser.OptionParamContext context)
         {
             string option = context.ID().ToString();
             _currentOptionValue = null;
-            if(context.EQUAL() != null)
-                this.Visit(context.option_value());
+            if (context.EQUAL() != null)
+            {
+                this.Visit(context.text());
+                _currentOptionValue = _currentString;
+            }
 
             if (!_options.ContainsKey(option))
                 _options[option] = _currentOptionValue;
@@ -148,28 +137,25 @@ namespace NetConsole.Core.Managers
             return base.VisitOptionParam(context);
         }
 
-        public override CommandActionInfo[] VisitBoolOption(CommandGrammarParser.BoolOptionContext context)
+        public override CommandActionInfo[] VisitIDText(CommandGrammarParser.IDTextContext context)
         {
-            _currentOptionValue = bool.Parse(context.BOOL().ToString());
-            return base.VisitBoolOption(context);
+            _currentString = context.ID().ToString();
+            return base.VisitIDText(context);
         }
 
-        public override CommandActionInfo[] VisitDoubleOption(CommandGrammarParser.DoubleOptionContext context)
+        public override CommandActionInfo[] VisitStringText(CommandGrammarParser.StringTextContext context)
         {
-            _currentOptionValue = double.Parse(context.DOUBLE().ToString());
-            return base.VisitDoubleOption(context);
-        }
-
-        public override CommandActionInfo[] VisitIntOption(CommandGrammarParser.IntOptionContext context)
-        {
-            _currentOptionValue = int.Parse(context.INT().ToString());
-            return base.VisitIntOption(context);
-        }
-
-        public override CommandActionInfo[] VisitStringOption(CommandGrammarParser.StringOptionContext context)
-        {
-            _currentOptionValue = context.st.Text;
-            return base.VisitStringOption(context);
+            var regex = new Regex("\"(.*?)\"", RegexOptions.Singleline);
+            var match = regex.Match(context.STRING().ToString());
+            _currentString = null;
+            if (match.Captures.Count > 0)
+            {
+                // Get the unquoted text:
+                var captureQuotedText = new Regex("[^\"]*[^\"]");
+                var quoted = captureQuotedText.Match(match.Captures[0].Value);
+                _currentString = quoted.Captures[0].Value;
+            }
+            return base.VisitStringText(context);
         }
 
         # endregion
@@ -201,19 +187,39 @@ namespace NetConsole.Core.Managers
                     var def = cmd.Accessor.GetOptionDefinition(kv.Key);
                     if (!def.DeclarableOnly)
                         cmd.Accessor.AddOptionValue(kv.Key, kv.Value);
+                    else if (kv.Value != null)
+                    {
+                        LastOperationStatus = 3;
+                        return new CommandActionInfo(string.Format("{0} option is declarable only.", kv.Key), 3);
+                    }
 
                     if (def.OverrideExecution)
                     {
-                        actionInfo = cmd.GetActionForOption(kv.Key);
-                        
-                        parameters = new List<ParamInfo>();
+                        actionInfo = cmd.GetMethodForOption(kv.Key);
+
+                        if (actionInfo == null)
+                        {
+                            LastOperationStatus = 4;
+                            return
+                                new CommandActionInfo(
+                                    string.Format("{0} self-executing option without corresponding method", kv.Key), 4);
+
+                        }
+                        parameters = new List<object> {action};
+                        if(kv.Value != null)
+                            parameters.Add(kv.Value);
                         break;
                     }
+                }
+                else
+                {
+                    LastOperationStatus = 2;
+                    return new CommandActionInfo(string.Format("{0} option is not defined for the command.", kv.Key), 2);
                 }
             }
 
             if (actionInfo == null)
-                actionInfo = cmd.FindAction(action, _parameters.Select(p => p.Type).ToArray());
+                actionInfo = cmd.FindAction(action, parameters.ToArray());
 
             if (actionInfo == null)
             {
@@ -223,7 +229,7 @@ namespace NetConsole.Core.Managers
 
             //var result = cmd.Perform(infoMatch, _parameters);
             LastOperationStatus = 0;
-            return new CommandActionInfo("Ok", 0, cmd, actionInfo, parameters);
+            return new CommandActionInfo("Ok", 0, cmd, actionInfo, actionInfo.MatchMethodParameters(parameters.ToArray()).Item2);
         }
 
         # endregion

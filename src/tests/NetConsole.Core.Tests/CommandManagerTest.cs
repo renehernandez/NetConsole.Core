@@ -78,10 +78,34 @@ namespace NetConsole.Core.Tests
         [Test]
         public void Test_ParseNothingIfSyntacticError()
         {
+            // Act
             var output = _manager.GetOutputFromString("echo hello world | prompt set ^^ echo again");
 
+            // Assert
             Assert.AreEqual(1, output.Length);
             Assert.AreEqual(1, output.Last().Status);
+        }
+
+        [Test]
+        public void Test_ParseHelpOption()
+        {
+            // Act
+            var output = _manager.GetOutputFromString("echo --help");
+
+            // Assert
+            Assert.AreEqual(1, output.Length);
+            Assert.AreEqual(0, output[0].Status);
+        }
+
+        [Test]
+        public void Test_PipeListOption()
+        {
+            // Act
+            var output = _manager.GetOutputFromString("prompt --list | echo");
+
+            // Assert
+            Assert.AreEqual(2, output.Length);
+            Assert.AreEqual(0, output[1].Status);
         }
 
         [Test]

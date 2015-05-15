@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using NetConsole.Core.Attributes;
 using NetConsole.Core.Exceptions;
 using NetConsole.Core.Extensions;
@@ -71,7 +72,7 @@ namespace NetConsole.Core.Factories
         public IEnumerable<ICommand> GetAll()
         {
             return _cache.Values;
-        } 
+        }
 
     }
 }

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using NetConsole.Core.Attributes;
-using NetConsole.Core.Interfaces;
+using NetConsole.Core.Commands;
 
-namespace NetConsole.Core.Commands
+namespace NetConsole.Core.Tests
 {
     public class EchoCommand : BaseCommand
     {
@@ -23,12 +23,12 @@ namespace NetConsole.Core.Commands
 
         [DefaultAction]
         [ActionHelp("Redirects the standard input to the standard output int the console")]
-        public string Echoed(params string[] input)
+        public string Echoed(params object[] input)
         {
             string output;
             try
             {
-                output = input.Aggregate((accum, curr) => accum + " " + curr);
+                output = input.Select(x => x.ToString()).Aggregate((accum, curr) => accum + " " + curr);
                 Status = 0;
             }
             catch (Exception e)

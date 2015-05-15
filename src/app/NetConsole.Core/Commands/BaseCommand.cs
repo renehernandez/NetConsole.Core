@@ -71,7 +71,7 @@ namespace NetConsole.Core.Commands
 
 
         [ActionForOption("list")]
-        protected string List(string action = null)
+        protected string List(string actionName = null)
         {
             var outputList = new StringBuilder();
 

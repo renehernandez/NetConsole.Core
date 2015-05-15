@@ -1,15 +1,21 @@
 ﻿using NetConsole.Core.Attributes;
+using NetConsole.Core.Commands;
 using NetConsole.Core.Interfaces;
 
-namespace NetConsole.Core.Commands
+namespace NetConsole.Core.Tests
 {
-
     public class PromptCommand : BaseCommand
     {
 
-        # region Private Locations
+        # region Private Fields
 
         private string _prompt;
+
+        # endregion
+
+        # region Public Properties
+
+        public string Domain { get; set; }
 
         # endregion
 

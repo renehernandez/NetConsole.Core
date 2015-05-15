@@ -49,6 +49,7 @@
     <Compile Include="Commands\BaseCommand.cs" />
     <Compile Include="Commands\Option.cs" />
     <Compile Include="Commands\OptionAccessor.cs" />
+    <Compile Include="Converters\Converter.cs" />
     <Compile Include="Errors\ParserErrorListener.cs" />
     <Compile Include="Errors\LexerErrorListener.cs" />
     <Compile Include="Exceptions\CoreException.cs" />
@@ -62,14 +63,13 @@
     <Compile Include="Exceptions\UndefinedCommandOption.cs" />
     <Compile Include="Exceptions\UnregisteredCommandException.cs" />
     <Compile Include="Extensions\HelpInfo.cs" />
+    <Compile Include="Extensions\MethodInfoExtensions.cs" />
     <Compile Include="Grammar\CommandActionInfo.cs" />
     <Compile Include="Interfaces\ICommandInfo.cs" />
     <Compile Include="Interfaces\ICommandManager.cs" />
     <Compile Include="Interfaces\IHelpInfo.cs" />
     <Compile Include="Interfaces\IOptionAccessor.cs" />
     <Compile Include="Managers\CommandExtractor.cs" />
-    <Compile Include="Commands\EchoCommand.cs" />
-    <Compile Include="Commands\PromptCommand.cs" />
     <Compile Include="Extensions\CommandExtension.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="Factories\CommandFactory.cs" />

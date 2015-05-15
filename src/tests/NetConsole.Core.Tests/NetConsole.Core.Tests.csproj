@@ -47,9 +47,13 @@
     <Compile Include="CommandFactoryTest.cs" />
     <Compile Include="CommandManagerTest.cs" />
     <Compile Include="CommandGrammarTest.cs" />
+    <Compile Include="ConverterTest.cs" />
+    <Compile Include="EchoCommand.cs" />
     <Compile Include="NotRegistrableCommand.cs" />
     <Compile Include="OptionAccessorTest.cs" />
+    <Compile Include="PromptCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReflectorHelper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

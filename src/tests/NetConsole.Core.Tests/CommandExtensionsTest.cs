@@ -14,19 +14,19 @@ namespace NetConsole.Core.Tests
     public class CommandExtensionsTest
     {
 
-        private ICommand command;
+        private ICommand _command;
 
         [SetUp]
         public void SetUp()
         {
-            command = new PromptCommand();
+            _command = new PromptCommand();
         }
 
         [Test]
         public void Test_FindActions()
         {
             // Act
-            var actions = command.FindActions();
+            var actions = _command.FindActions().ToArray();
 
             // Assert
             Assert.AreEqual(2, actions.Length);
@@ -38,40 +38,51 @@ namespace NetConsole.Core.Tests
         public void Test_FindActionByName()
         {
             // Act
-            var action = command.FindAction("get");
+            var action = _command.FindAction("get");
             
             // Assert
             Assert.NotNull(action);
-            Assert.AreEqual("Get", action.Name);
+            Assert.AreEqual(ReflectorHelper.GetActionName((PromptCommand cmd) => cmd.Get()), action.Name);
+        }
+
+        [Test]
+        public void Test_FindDefaultAction()
+        {
+            // Act
+            var action = _command.FindDefaultAction();
+
+            // Assert
+            Assert.NotNull(action);
+            Assert.AreEqual(ReflectorHelper.GetActionName((PromptCommand cmd) => cmd.Get()), action.Name);
         }
 
         [Test]
         public void Test_FindActionByNameAndParams()
         {
             // Act
-            var action = command.FindAction("set", new[] {typeof (string).Name});
+            var action = _command.FindAction("set", new object[] {typeof (string).Name});
 
             // Assert
             Assert.NotNull(action);
-            Assert.AreEqual("Set", action.Name);
+            Assert.AreEqual(ReflectorHelper.GetActionName((PromptCommand cmd) => cmd.Set(null)), action.Name);
         }
 
         [Test]
         public void Test_FindDefaultActionByParams()
         {
             // Act
-            var action = command.FindAction(null, new string[0]);
+            var action = _command.FindAction(null, new string[0]);
 
             // Assert
             Assert.NotNull(action);
-            Assert.AreEqual("Get", action.Name);
+            Assert.AreEqual(ReflectorHelper.GetActionName((PromptCommand cmd) => cmd.Get()), action.Name);
         }
 
         [Test]
         public void Test_GetActionForHelpOption()
         {
             // Act
-            var action = command.GetActionForOption("help");
+            var action = _command.GetMethodForOption("help");
 
             // Assert
             Assert.NotNull(action);
@@ -82,7 +93,7 @@ namespace NetConsole.Core.Tests
         public void Test_GetActionForListOption()
         {
             // Act
-            var action = command.GetActionForOption("list");
+            var action = _command.GetMethodForOption("list");
 
             // Assert
             Assert.NotNull(action);
@@ -93,20 +104,20 @@ namespace NetConsole.Core.Tests
         public void Test_GetActionForListOptionOutput()
         {
             // Act
-            var action = command.GetActionForOption("list");
+            var action = _command.GetMethodForOption("list");
 
             // Assert
-            Assert.AreEqual("get\r\nset\r\n", action.Invoke(command, new []{Type.Missing}));
+            Assert.AreEqual("get\r\nset\r\n", action.Invoke(_command, new []{Type.Missing}));
         }
 
         [Test]
         public void Test_Perform()
         {
             // Arrange
-            var action = command.FindAction("set");
+            var action = _command.FindAction("set");
 
             // Act
-            var output = command.Perform(action, new[] {new ParamInfo("hello"),});
+            var output = _command.Perform(action, new object[] {"hello"});
 
             // Assert
             Assert.NotNull(output);

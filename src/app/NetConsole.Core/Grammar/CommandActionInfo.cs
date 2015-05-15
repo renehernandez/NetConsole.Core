@@ -21,9 +21,9 @@ namespace NetConsole.Core.Grammar
         
         public string Message { get; private set; }
 
-        public IList<ParamInfo> Params { get; private set; } 
+        public object[] Arguments { get; private set; } 
 
-        public CommandActionInfo(string message,  int status, ICommand cmd = null, MethodInfo action = null, IList<ParamInfo> paramsInfo = null)
+        public CommandActionInfo(string message,  int status, ICommand cmd = null, MethodInfo action = null, object[] paramsInfo = null)
         {
             Status = status;
             Message = message;       
@@ -32,13 +32,13 @@ namespace NetConsole.Core.Grammar
                 Command = cmd;
                 Action = action;
                 ReturnType = action.ReturnType.Name;
-                Params = paramsInfo;
+                Arguments = paramsInfo;
             }
         }
 
         public object Perform()
         {
-            return Command.Perform(Action, Params);
+            return Command.Perform(Action, Arguments);
         }
     }
 }

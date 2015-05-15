@@ -15,10 +15,10 @@ instruction
 	;
 
 atomic_instruction
-	:	command										# SingleCommand
-	|	command ( PIPE command_header)+				# PipeCommand
-	|	command REDIRECT st = (STRING | ID)			# RedirectCommand
-	|	command_header INPUT st = (STRING | ID)		# InputCommand
+	:	command								# SingleCommand
+	|	command ( PIPE command_header)+		# PipeCommand
+	|	command REDIRECT text				# RedirectCommand
+	|	command_header INPUT text			# InputCommand
 	;
 
 command 
@@ -32,19 +32,15 @@ list_params
 	;
 
 command_param
-	:	st = (STRING | ID)								# StringParam
-	|	INT												# IntParam 
-	|	DOUBLE											# DoubleParam
-	|	BOOL											# BoolParam
-	|	DOUBLE_HYPHEN ID (EQUAL val = option_value)?	# OptionParam
+	:	text								# StringParam
+	|	DOUBLE_HYPHEN ID (EQUAL text)?		# OptionParam
 	;
 
-option_value
-	:	st = (STRING | ID)		# StringOption
-	|	DOUBLE					# DoubleOption
-	|	INT						# IntOption
-	|	BOOL					# BoolOption
+text 
+	:	STRING		# StringText
+	|	ID			# IDText
 	;
+
 /*
  * Lexer Rules
  */
@@ -69,12 +65,6 @@ fragment
 
 fragment
 	QUOTES : '"';
-
-DOUBLE : HYPHEN? DIGIT+ DOT DIGIT+;
-
-INT : HYPHEN? DIGIT+ ;
-
-BOOL : 'true' | 'false';
 
 ID	: LETTER (LETTER | DIGIT | UNDERSCORE | HYPHEN )*;
 

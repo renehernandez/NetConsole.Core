@@ -49,7 +49,7 @@ namespace NetConsole.Core.Commands
             //    throw new DeclarableOnlyOptionException(name);
             //}
 
-            _store[name] = value ?? _commandOwner.GetActionForOption(name);
+            _store[name] = value ?? _commandOwner.GetMethodForOption(name);
         }
 
         public object GetOption(string name)
