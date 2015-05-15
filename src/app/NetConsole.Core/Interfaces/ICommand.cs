@@ -1,13 +1,11 @@
 ﻿namespace NetConsole.Core.Interfaces
 {
-    public interface ICommand
+    public interface ICommand : IRegistrable
     {
 
         IOptionAccessor Accessor { get; }
 
         int Status { get; }
-
-        string Name { get; }
 
         string Overview { get; }
 

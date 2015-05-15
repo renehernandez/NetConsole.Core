@@ -2,40 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using NetConsole.Core.Attributes;
+using NetConsole.Core.Exceptions;
+using NetConsole.Core.Extensions;
 using NetConsole.Core.Interfaces;
 
 namespace NetConsole.Core.Factories
 {
-    public class ScriptFactory : IFactory<ICommandScript>
+    public class ScriptFactory : BaseFactory<ICommandScript>
     {
-        public void Register(ICommandScript instance)
+
+        public ScriptFactory()
         {
-            throw new NotImplementedException();
+            
         }
 
-        public ICommandScript Unregister(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RegisterAll(bool includeNotRegistrable = false)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ICommand GetInstance(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<ICommandScript> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Contains(string name)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

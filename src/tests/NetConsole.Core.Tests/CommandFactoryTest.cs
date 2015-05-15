@@ -84,7 +84,7 @@ namespace NetConsole.Core.Tests
         public void Test_RegisterThrowsDuplicatedException()
         {
             // Assert
-            Assert.Throws<DuplicatedCommandNameException>(() => _factory.Register(_cmd));
+            Assert.Throws<DuplicatedNameException>(() => _factory.Register(_cmd));
         }
 
         [Test]
@@ -94,14 +94,14 @@ namespace NetConsole.Core.Tests
             ICommand cmd = null;
 
             // Assert
-            Assert.Throws<NullCommandInstanceException>(() => _factory.Register(cmd));
+            Assert.Throws<NullInstanceException>(() => _factory.Register(cmd));
         }
 
         [Test]
         public void Test_GetInstanceThrowsException()
         {
             // Assert
-            Assert.Throws<UnregisteredCommandException>(() => _factory.GetInstance("close"));
+            Assert.Throws<UnregisteredInstanceException>(() => _factory.GetInstance("close"));
         }
 
         [Test]

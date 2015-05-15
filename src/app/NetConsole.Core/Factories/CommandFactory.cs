@@ -9,70 +9,57 @@ using NetConsole.Core.Interfaces;
 
 namespace NetConsole.Core.Factories
 {
-    public class CommandFactory : IFactory<ICommand>
+    public class CommandFactory : BaseFactory<ICommand>
     {
 
-        private static Dictionary<string, ICommand> _cache;
 
         public CommandFactory()
         {
-            _cache = new Dictionary<string, ICommand>();
         }
 
-        public void Register(ICommand instance)
-        {
-            if(instance == null)
-                throw new NullCommandInstanceException();
+        //public ICommand Unregister(string name)
+        //{
+        //    if(!Contains(name))
+        //        throw new FailedUnregisterOperationException(name);
 
-            if(Contains(instance.Name))
-                throw new DuplicatedCommandNameException(instance.Name);
+        //    var cmd = _cache[name];
+        //    _cache.Remove(name);
 
-            _cache.Add(instance.Name, instance);
-        }
+        //    return cmd;
+        //}
 
-        public ICommand Unregister(string name)
-        {
-            if(!Contains(name))
-                throw new FailedUnregisterOperationException(name);
+        //public void RegisterAll(bool includeNotRegistrable = false)
+        //{
+        //    var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-            var cmd = _cache[name];
-            _cache.Remove(name);
+        //    var commandTypes = assemblies.SelectMany(asm => asm.GetLoadableTypes()).GetTypesWithInterface<ICommand>();
 
-            return cmd;
-        }
+        //    if (!includeNotRegistrable)
+        //        commandTypes = commandTypes.Where(cmd => !cmd.GetCustomAttributes(true).OfType<NotRegistrableAttribute>().Any());
 
-        public void RegisterAll(bool includeNotRegistrable = false)
-        {
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+        //    foreach (var type in commandTypes.Where(t => !t.IsAbstract))
+        //    {
+        //        Register((ICommand)Activator.CreateInstance(type));
+        //    }
+        //}
 
-            var commandTypes = assemblies.SelectMany(asm => asm.GetLoadableTypes()).GetTypesWithInterface<ICommand>();
+        //public bool Contains(string name)
+        //{
+        //    return _cache.ContainsKey(name);
+        //}
 
-            if (!includeNotRegistrable)
-                commandTypes = commandTypes.Where(cmd => cmd.GetCustomAttributes(typeof (NotRegistrableAttribute), true).Length == 0);
+        //public ICommand GetInstance(string name)
+        //{
+        //    if(!Contains(name))
+        //        throw new UnregisteredInstanceException(name);
 
-            foreach (var type in commandTypes.Where(t => !t.IsAbstract))
-            {
-                Register((ICommand)Activator.CreateInstance(type));
-            }
-        }
+        //    return _cache[name];
+        //}
 
-        public bool Contains(string name)
-        {
-            return _cache.ContainsKey(name);
-        }
-
-        public ICommand GetInstance(string name)
-        {
-            if(!Contains(name))
-                throw new UnregisteredCommandException(name);
-
-            return _cache[name];
-        }
-
-        public IEnumerable<ICommand> GetAll()
-        {
-            return _cache.Values;
-        }
+        //public IEnumerable<ICommand> GetAll()
+        //{
+        //    return _cache.Values;
+        //}
 
     }
 }

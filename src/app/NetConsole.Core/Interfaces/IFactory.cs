@@ -11,7 +11,7 @@ namespace NetConsole.Core.Interfaces
 
         void RegisterAll(bool includeNotRegistrable = false);
 
-        ICommand GetInstance(string name);
+        T GetInstance(string name);
 
         IEnumerable<T> GetAll();
 
