@@ -9,7 +9,7 @@ using NetConsole.Core.Interfaces;
 
 namespace NetConsole.Core.Factories
 {
-    public class CommandFactory : ICommandFactory
+    public class CommandFactory : IFactory<ICommand>
     {
 
         private static Dictionary<string, ICommand> _cache;
@@ -19,7 +19,7 @@ namespace NetConsole.Core.Factories
             _cache = new Dictionary<string, ICommand>();
         }
 
-        public void Register<T>(T instance) where T : ICommand
+        public void Register(ICommand instance)
         {
             if(instance == null)
                 throw new NullCommandInstanceException();
@@ -30,13 +30,13 @@ namespace NetConsole.Core.Factories
             _cache.Add(instance.Name, instance);
         }
 
-        public ICommand Unregister(string cmdName)
+        public ICommand Unregister(string name)
         {
-            if(!Contains(cmdName))
-                throw new FailedUnregisterOperationException(cmdName);
+            if(!Contains(name))
+                throw new FailedUnregisterOperationException(name);
 
-            var cmd = _cache[cmdName];
-            _cache.Remove(cmdName);
+            var cmd = _cache[name];
+            _cache.Remove(name);
 
             return cmd;
         }
@@ -56,17 +56,17 @@ namespace NetConsole.Core.Factories
             }
         }
 
-        public bool Contains(string cmdName)
+        public bool Contains(string name)
         {
-            return _cache.ContainsKey(cmdName);
+            return _cache.ContainsKey(name);
         }
 
-        public ICommand GetInstance(string cmdName)
+        public ICommand GetInstance(string name)
         {
-            if(!Contains(cmdName))
-                throw new UnregisteredCommandException(cmdName);
+            if(!Contains(name))
+                throw new UnregisteredCommandException(name);
 
-            return _cache[cmdName];
+            return _cache[name];
         }
 
         public IEnumerable<ICommand> GetAll()

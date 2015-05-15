@@ -22,7 +22,7 @@ namespace NetConsole.Core.Managers
 
         # region Public Properties
 
-        public ICommandFactory Factory { get; private set; }
+        public IFactory<ICommand> Factory { get; private set; }
 
         # endregion
 
@@ -32,7 +32,7 @@ namespace NetConsole.Core.Managers
         {
         }
 
-        public CommandManager(ICommandFactory factory)
+        public CommandManager(IFactory<ICommand> factory)
         {
             Factory = factory;
             _extractor = new CommandExtractor(Factory);

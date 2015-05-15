@@ -26,7 +26,7 @@ namespace NetConsole.Core.Tests
         public void Test_CommandManagerNotImportNotRegistrable()
         {
             // Assert
-            Assert.AreEqual(2, _manager.Factory.GetAll().Count());
+            Assert.AreEqual(3, _manager.Factory.GetAll().Count());
         }
 
         [Test]
@@ -95,6 +95,16 @@ namespace NetConsole.Core.Tests
             // Assert
             Assert.AreEqual(1, output.Length);
             Assert.AreEqual(0, output[0].Status);
+        }
+
+        [Test]
+        public void Test_GetOutputFromFile()
+        {
+            var output = _manager.GetOutputFromFile("../../script.txt");
+
+            // Assert
+            Assert.AreEqual(2, output.Length);
+            Assert.AreEqual(0, output[1].Status);
         }
 
         [Test]

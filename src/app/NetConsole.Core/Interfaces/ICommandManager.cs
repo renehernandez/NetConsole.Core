@@ -4,7 +4,7 @@ namespace NetConsole.Core.Interfaces
 {
     public interface ICommandManager
     {
-        ICommandFactory Factory { get; }
+        IFactory<ICommand> Factory { get; }
 
         ReturnInfo[] GetOutputFromString(string input);
 

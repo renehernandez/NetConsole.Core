@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using NetConsole.Core.Actions;
 using NetConsole.Core.Commands;
 using NetConsole.Core.Factories;
 using NetConsole.Core.Grammar;
@@ -41,7 +42,7 @@ namespace NetConsole.Core.Tests
             // Assert
             Assert.AreEqual(1, outputs.Length);
             Assert.AreEqual(0, _extractor.LastOperationStatus);
-            Assert.AreEqual(ReflectorHelper.GetActionName((EchoCommand cmd) => cmd.Echoed()), outputs[0].Action.Name);
+            Assert.AreEqual(ReflectorHelper.GetActionName((EchoCommand cmd) => cmd.Echoed()), outputs[0].Name);
         }
 
         [Test]
@@ -53,7 +54,7 @@ namespace NetConsole.Core.Tests
             // Assert
             Assert.AreEqual(1, outputs.Length);
             Assert.AreEqual(0, _extractor.LastOperationStatus);
-            Assert.AreEqual(ReflectorHelper.GetActionName((PromptCommand cmd) => cmd.Get()), outputs[0].Action.Name);
+            Assert.AreEqual(ReflectorHelper.GetActionName((PromptCommand cmd) => cmd.Get()), outputs[0].Name);
         }
 
         [Test]
@@ -65,7 +66,7 @@ namespace NetConsole.Core.Tests
             // Assert
             Assert.AreEqual(1, outputs.Length);
             Assert.AreEqual(0, _extractor.LastOperationStatus);
-            Assert.AreEqual(ReflectorHelper.GetActionName((PromptCommand cmd) => cmd.Set(null)), outputs[0].Action.Name);
+            Assert.AreEqual(ReflectorHelper.GetActionName((PromptCommand cmd) => cmd.Set(null)), outputs[0].Name);
         }
 
         [Test]
@@ -77,7 +78,7 @@ namespace NetConsole.Core.Tests
             // Assert
             Assert.AreEqual(1, outputs.Length);
             Assert.AreEqual(0, _extractor.LastOperationStatus);
-            Assert.AreEqual(ReflectorHelper.GetActionName((EchoCommand cmd) => cmd.Echoed()), outputs[0].Action.Name);
+            Assert.AreEqual(ReflectorHelper.GetActionName((EchoCommand cmd) => cmd.Echoed()), outputs[0].Name);
         }
 
         [Test]
@@ -89,8 +90,8 @@ namespace NetConsole.Core.Tests
             // Assert
             Assert.AreEqual(2, outputs.Length);
             Assert.AreEqual(0, _extractor.LastOperationStatus);
-            Assert.AreEqual(ReflectorHelper.GetActionName((EchoCommand cmd) => cmd.Echoed()), outputs[0].Action.Name);
-            Assert.AreEqual(ReflectorHelper.GetActionName((PromptCommand cmd) => cmd.Get()), outputs[1].Action.Name);
+            Assert.AreEqual(ReflectorHelper.GetActionName((EchoCommand cmd) => cmd.Echoed()), outputs[0].Name);
+            Assert.AreEqual(ReflectorHelper.GetActionName((PromptCommand cmd) => cmd.Get()), outputs[1].Name);
         }
 
         [Test]
@@ -114,7 +115,7 @@ namespace NetConsole.Core.Tests
             Assert.AreEqual(2, outputs.Length);
             Assert.AreEqual(0, _extractor.LastOperationStatus);
             Assert.AreEqual("There is not any compatible action for this command.", outputs[0].Message);
-            Assert.AreEqual(ReflectorHelper.GetActionName((EchoCommand cmd) => cmd.Echoed(null)), outputs[1].Action.Name);
+            Assert.AreEqual(ReflectorHelper.GetActionName((EchoCommand cmd) => cmd.Echoed(null)), outputs[1].Name);
         }
 
         [Test]
@@ -126,8 +127,8 @@ namespace NetConsole.Core.Tests
             // Assert
             Assert.AreEqual(2, outputs.Length);
             Assert.AreEqual(0, _extractor.LastOperationStatus);
-            Assert.AreEqual(ReflectorHelper.GetActionName((PromptCommand c) => c.Set(null)), outputs[0].Action.Name);
-            Assert.AreEqual(ReflectorHelper.GetActionName((EchoCommand c) => c.Echoed(null)), outputs[1].Action.Name);
+            Assert.AreEqual(ReflectorHelper.GetActionName((PromptCommand c) => c.Set(null)), outputs[0].Name);
+            Assert.AreEqual(ReflectorHelper.GetActionName((EchoCommand c) => c.Echoed(null)), outputs[1].Name);
         }
 
         [Test]
@@ -139,9 +140,9 @@ namespace NetConsole.Core.Tests
             // Asert
             Assert.AreEqual(3, outputs.Length);
             Assert.AreEqual(0, _extractor.LastOperationStatus);
-            Assert.AreEqual(ReflectorHelper.GetActionName((EchoCommand c) => c.Echoed(null)), outputs[0].Action.Name);
-            Assert.AreEqual(ReflectorHelper.GetActionName((EchoCommand c) => c.Echoed(null)), outputs[1].Action.Name);
-            Assert.AreEqual(ReflectorHelper.GetActionName((PromptCommand c) => c.Set(null)), outputs[2].Action.Name);
+            Assert.AreEqual(ReflectorHelper.GetActionName((EchoCommand c) => c.Echoed(null)), outputs[0].Name);
+            Assert.AreEqual(ReflectorHelper.GetActionName((EchoCommand c) => c.Echoed(null)), outputs[1].Name);
+            Assert.AreEqual(ReflectorHelper.GetActionName((PromptCommand c) => c.Set(null)), outputs[2].Name);
         }
 
         [Test]
@@ -154,7 +155,7 @@ namespace NetConsole.Core.Tests
             Assert.NotNull(output);
             Assert.AreEqual(1, output.Length);
             Assert.AreEqual(0, output[0].Status);
-            Assert.AreEqual("Help", output[0].Action.Name);
+            Assert.AreEqual("Help", output[0].Name);
         }
 
         [Test]
@@ -167,7 +168,7 @@ namespace NetConsole.Core.Tests
             Assert.NotNull(output);
             Assert.AreEqual(1, output.Length);
             Assert.AreEqual(0, output[0].Status);
-            Assert.AreEqual("List", output[0].Action.Name);
+            Assert.AreEqual("List", output[0].Name);
         }
 
         [Test]
@@ -179,10 +180,10 @@ namespace NetConsole.Core.Tests
             // Assert
             Assert.AreEqual(1, output.Length);
             Assert.AreEqual(0, output[0].Status);
-            Assert.AreEqual("Help", output[0].Action.Name);
+            Assert.AreEqual("Help", output[0].Name);
         }
 
-        private CommandActionInfo[] Connect(string input)
+        private CommandAction[] Connect(string input)
         {
             _lexer = new CommandGrammarLexer(new AntlrInputStream(input));
             _tokens = new CommonTokenStream(_lexer);

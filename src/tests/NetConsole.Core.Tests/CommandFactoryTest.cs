@@ -12,7 +12,7 @@ namespace NetConsole.Core.Tests
     public class CommandFactoryTest
     {
 
-        private ICommandFactory _factory;
+        private IFactory<ICommand> _factory;
         private ICommand _cmd;
 
         [SetUp]
@@ -64,7 +64,7 @@ namespace NetConsole.Core.Tests
             _factory.RegisterAll();
 
             // Assert
-            Assert.AreEqual(2, _factory.GetAll().Count());
+            Assert.AreEqual(3, _factory.GetAll().Count());
         }
 
         [Test]
@@ -77,7 +77,7 @@ namespace NetConsole.Core.Tests
             _factory.RegisterAll(true);
 
             // Assert
-            Assert.AreEqual(3, _factory.GetAll().Count());
+            Assert.AreEqual(4, _factory.GetAll().Count());
         }
 
         [Test]

@@ -4,18 +4,19 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Antlr4.Runtime.Tree;
+using NetConsole.Core.Actions;
 using NetConsole.Core.Extensions;
 using NetConsole.Core.Grammar;
 using NetConsole.Core.Interfaces;
 
 namespace NetConsole.Core.Managers
 {
-    public class CommandExtractor : CommandGrammarBaseVisitor<CommandActionInfo[]>
+    public class CommandExtractor : CommandGrammarBaseVisitor<CommandAction[]>
     {
 
         public int LastOperationStatus { get; private set; }
 
-        private ICommandFactory _factory;
+        private IFactory<ICommand> _factory;
 
         private List<object> _parameters;
 
@@ -25,7 +26,7 @@ namespace NetConsole.Core.Managers
 
         private string _currentString;
 
-        public CommandExtractor(ICommandFactory factory)
+        public CommandExtractor(IFactory<ICommand> factory)
         {
             _factory = factory;
             _parameters = new List<object>();
@@ -34,13 +35,18 @@ namespace NetConsole.Core.Managers
 
         # region Public Methods
 
-        public override CommandActionInfo[] VisitCompile(CommandGrammarParser.CompileContext context)
+        public override CommandAction[] VisitCompile(CommandGrammarParser.CompileContext context)
         {
-            var output = this.Visit(context.instruction());
-            return output;
+            var outputs = new List<CommandAction>();
+            foreach (var instruction in context.instruction())
+            {
+                outputs.AddRange(this.Visit(instruction));
+            }
+            
+            return outputs.ToArray();
         }
 
-        public override CommandActionInfo[] VisitAndInstruction(CommandGrammarParser.AndInstructionContext context)
+        public override CommandAction[] VisitAndInstruction(CommandGrammarParser.AndInstructionContext context)
         {
             var leftInst = this.Visit(context.instruction(0));
 
@@ -54,7 +60,7 @@ namespace NetConsole.Core.Managers
             return leftInst.Concat(rightInst).ToArray();
         }
 
-        public override CommandActionInfo[] VisitOrInstruction(CommandGrammarParser.OrInstructionContext context)
+        public override CommandAction[] VisitOrInstruction(CommandGrammarParser.OrInstructionContext context)
         {
             var leftInst = this.Visit(context.instruction(0));
 
@@ -68,13 +74,13 @@ namespace NetConsole.Core.Managers
             return leftInst.Concat(rightInst).ToArray();
         }
 
-        public override CommandActionInfo[] VisitAtomicInstruction(CommandGrammarParser.AtomicInstructionContext context)
+        public override CommandAction[] VisitAtomicInstruction(CommandGrammarParser.AtomicInstructionContext context)
         {
             var output = this.Visit(context.atomic_instruction());
             return output;
         }
 
-        public override CommandActionInfo[] VisitCommand(CommandGrammarParser.CommandContext context)
+        public override CommandAction[] VisitCommand(CommandGrammarParser.CommandContext context)
         {
             _parameters = new List<object>();
             _options = new Dictionary<string, object>();
@@ -84,11 +90,11 @@ namespace NetConsole.Core.Managers
             return new[] {ExtractCommand(context.command_header())};
         }
 
-        public override CommandActionInfo[] VisitPipeCommand(CommandGrammarParser.PipeCommandContext context)
+        public override CommandAction[] VisitPipeCommand(CommandGrammarParser.PipeCommandContext context)
         {
-            CommandActionInfo[] leftCommand = this.Visit(context.command());
+            CommandAction[] leftCommand = this.Visit(context.command());
 
-            var outputs = new List<CommandActionInfo>(leftCommand);
+            var outputs = new List<CommandAction>(leftCommand);
 
             foreach (var header in context.command_header())
             {
@@ -104,24 +110,24 @@ namespace NetConsole.Core.Managers
             return outputs.ToArray();
         }
 
-        public override CommandActionInfo[] VisitRedirectCommand(CommandGrammarParser.RedirectCommandContext context)
+        public override CommandAction[] VisitRedirectCommand(CommandGrammarParser.RedirectCommandContext context)
         {
             return base.VisitRedirectCommand(context);
         }
 
-        public override CommandActionInfo[] VisitInputCommand(CommandGrammarParser.InputCommandContext context)
+        public override CommandAction[] VisitInputCommand(CommandGrammarParser.InputCommandContext context)
         {
             return base.VisitInputCommand(context);
         }
 
-        public override CommandActionInfo[] VisitStringParam(CommandGrammarParser.StringParamContext context)
+        public override CommandAction[] VisitStringParam(CommandGrammarParser.StringParamContext context)
         {
             this.Visit(context.text());
             _parameters.Add(_currentString);
             return base.VisitStringParam(context);
         }
 
-        public override CommandActionInfo[] VisitOptionParam(CommandGrammarParser.OptionParamContext context)
+        public override CommandAction[] VisitOptionParam(CommandGrammarParser.OptionParamContext context)
         {
             string option = context.ID().ToString();
             _currentOptionValue = null;
@@ -137,13 +143,13 @@ namespace NetConsole.Core.Managers
             return base.VisitOptionParam(context);
         }
 
-        public override CommandActionInfo[] VisitIDText(CommandGrammarParser.IDTextContext context)
+        public override CommandAction[] VisitIDText(CommandGrammarParser.IDTextContext context)
         {
             _currentString = context.ID().ToString();
             return base.VisitIDText(context);
         }
 
-        public override CommandActionInfo[] VisitStringText(CommandGrammarParser.StringTextContext context)
+        public override CommandAction[] VisitStringText(CommandGrammarParser.StringTextContext context)
         {
             var regex = new Regex("\"(.*?)\"", RegexOptions.Singleline);
             var match = regex.Match(context.STRING().ToString());
@@ -162,7 +168,7 @@ namespace NetConsole.Core.Managers
 
         # region Private Methods
 
-        private CommandActionInfo ExtractCommand(CommandGrammarParser.Command_headerContext header)
+        private CommandAction ExtractCommand(CommandGrammarParser.Command_headerContext header)
         {
             string cmdName = header.GetChild(0).GetText();
 
@@ -171,7 +177,7 @@ namespace NetConsole.Core.Managers
             if (!_factory.Contains(cmdName))
             {
                 LastOperationStatus = 1;
-                return new CommandActionInfo("Command not present in factory.", 1);
+                return new CommandAction("Command not present in factory.", 1);
             }
 
             var cmd = _factory.GetInstance(cmdName);
@@ -190,7 +196,7 @@ namespace NetConsole.Core.Managers
                     else if (kv.Value != null)
                     {
                         LastOperationStatus = 3;
-                        return new CommandActionInfo(string.Format("{0} option is declarable only.", kv.Key), 3);
+                        return new CommandAction(string.Format("{0} option is declarable only.", kv.Key), 3);
                     }
 
                     if (def.OverrideExecution)
@@ -201,7 +207,7 @@ namespace NetConsole.Core.Managers
                         {
                             LastOperationStatus = 4;
                             return
-                                new CommandActionInfo(
+                                new CommandAction(
                                     string.Format("{0} self-executing option without corresponding method", kv.Key), 4);
 
                         }
@@ -214,7 +220,7 @@ namespace NetConsole.Core.Managers
                 else
                 {
                     LastOperationStatus = 2;
-                    return new CommandActionInfo(string.Format("{0} option is not defined for the command.", kv.Key), 2);
+                    return new CommandAction(string.Format("{0} option is not defined for the command.", kv.Key), 2);
                 }
             }
 
@@ -224,12 +230,12 @@ namespace NetConsole.Core.Managers
             if (actionInfo == null)
             {
                 LastOperationStatus = 1;
-                return new CommandActionInfo("There is not any compatible action for this command.", 1);
+                return new CommandAction("There is not any compatible action for this command.", 1);
             }
 
             //var result = cmd.Perform(infoMatch, _parameters);
             LastOperationStatus = 0;
-            return new CommandActionInfo("Ok", 0, cmd, actionInfo, actionInfo.MatchMethodParameters(parameters.ToArray()).Item2);
+            return new CommandAction("Ok", 0, cmd, actionInfo, actionInfo.MatchMethodParameters(parameters.ToArray()).Item2);
         }
 
         # endregion

@@ -5,7 +5,7 @@ grammar CommandGrammar;
  */
 
 compile
-	:	instruction EOF
+	:	instruction+ EOF
 	;
 
 instruction
@@ -15,10 +15,10 @@ instruction
 	;
 
 atomic_instruction
-	:	command								# SingleCommand
-	|	command ( PIPE command_header)+		# PipeCommand
+	:	command (PIPE command_header)+		# PipeCommand
 	|	command REDIRECT text				# RedirectCommand
 	|	command_header INPUT text			# InputCommand
+	|	command								# SingleCommand
 	;
 
 command 
