@@ -5,7 +5,7 @@ grammar CommandGrammar;
  */
 
 compile
-	:	instruction EOF
+	:	instruction+ EOF
 	;
 
 instruction
@@ -15,9 +15,10 @@ instruction
 	;
 
 atomic_instruction
-	:	command								# SingleCommand
-	|	command ( PIPE command_header)+		# PipeCommand
-	|	command REDIRECT (STRING | ID)		# RedirectCommand
+	:	command (PIPE command_header)+		# PipeCommand
+	|	command REDIRECT text				# RedirectCommand
+	|	command_header INPUT text			# InputCommand
+	|	command								# SingleCommand
 	;
 
 command 
@@ -31,24 +32,36 @@ list_params
 	;
 
 command_param
-	:	st = (STRING | ID)	# StringParam
-	|	INT					# IntParam 
-	|	DOUBLE				# DoubleParam
-	|	BOOL				# BoolParam
+	:	type_param								# TypeParam
+	|	DOUBLE_HYPHEN ID (EQUAL type_param)?	# OptionParam
+	;
+
+type_param
+	:	text								# StringParam
+	|	INT									# IntParam
+	|	DOUBLE								# DoubleParam
+	;
+
+text 
+	:	STRING		# StringText
+	|	ID			# IDText
 	;
 
 /*
  * Lexer Rules
  */
 
-AND         : '&&';
-OR          : '||';
-PIPE        : '|';
-REDIRECT    : '>';
-DOT         : '.';
-COLON		: ':';
-UNDERSCORE  : '_';
-MINUS       : '-';
+AND				: '&&';
+OR				: '||';
+PIPE			: '|';
+REDIRECT		: '>';
+INPUT			: '<';
+DOT				: '.';
+COLON			: ':';
+UNDERSCORE		: '_';
+HYPHEN			: '-';
+DOUBLE_HYPHEN   : '--';
+EQUAL			: '=';
 
 fragment
 	DIGIT : [0-9];
@@ -59,12 +72,12 @@ fragment
 fragment
 	QUOTES : '"';
 
-DOUBLE : DIGIT+ DOT DIGIT+;
-INT : DIGIT+ ;
 
-BOOL : 'true' | 'false';
+INT : HYPHEN? DIGIT+;
 
-ID	: LETTER (LETTER | DIGIT | UNDERSCORE | MINUS )*;
+DOUBLE : HYPHEN? DIGIT+ (DOT DIGIT+)? ;
+
+ID	: LETTER (LETTER | DIGIT | UNDERSCORE | HYPHEN )*;
 
 STRING : QUOTES .*? QUOTES;
 

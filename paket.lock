@@ -8,3 +8,4 @@ NUGET
     NUnit (2.6.4)
     NUnit.Runners (2.6.4)
     NUnitTestAdapter (2.0.0)
+    RhinoMocks (3.6.1)

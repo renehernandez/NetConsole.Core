@@ -33,7 +33,19 @@ namespace NetConsole.Core.Tests
         public void Test_GetOutputFromStringSuccess()
         {
             // Act
-            var output = _manager.GetOutputFromString("echo:echoed unique trial");
+            var output = _manager.ProcessInput("echo:echoed unique trial");
+
+            // Assert
+            Assert.AreEqual(1, output.Length);
+            Assert.AreEqual(0, output[0].Status);
+            Assert.AreEqual("unique trial", output[0].Output);
+        }
+
+        [Test]
+        public void Test_EchoCommandWithCaseOption()
+        {
+            // Act
+            var output = _manager.ProcessInput("echo:echoed --case=1 Unique Trial");
 
             // Assert
             Assert.AreEqual(1, output.Length);
@@ -45,7 +57,7 @@ namespace NetConsole.Core.Tests
         public void Test_GetErrorOutputFromString()
         {
             // Act
-            var output = _manager.GetOutputFromString("hello");
+            var output = _manager.ProcessInput("hello");
 
             // Assert
             Assert.AreEqual(1, output.Length);
@@ -57,7 +69,7 @@ namespace NetConsole.Core.Tests
         public void Test_BailAtFirstErrorWithoutMatchingAnythingAfter()
         {
             // Act
-            var output = _manager.GetOutputFromString("^^ echo blackd");
+            var output = _manager.ProcessInput("^^ echo blackd");
 
             // Assert
             Assert.AreEqual(1, output.Length);
@@ -68,7 +80,7 @@ namespace NetConsole.Core.Tests
         public void Test_GetErrorOutputFromEmptyString()
         {
             // Act
-            var output = _manager.GetOutputFromString("");
+            var output = _manager.ProcessInput("");
 
             // Assert
             Assert.AreEqual(1, output.Length);
@@ -78,24 +90,58 @@ namespace NetConsole.Core.Tests
         [Test]
         public void Test_ParseNothingIfSyntacticError()
         {
-            var output = _manager.GetOutputFromString("echo hello world | prompt set ^^ echo again");
+            // Act
+            var output = _manager.ProcessInput("echo hello world | prompt set ^^ echo again");
 
+            // Assert
             Assert.AreEqual(1, output.Length);
             Assert.AreEqual(1, output.Last().Status);
         }
 
         [Test]
-        public void Test_ThrowArgumentNullExceptionGetOutputFromString()
+        public void Test_ParseHelpOption()
         {
+            // Act
+            var output = _manager.ProcessInput("echo --help");
+
             // Assert
-            Assert.Throws<ArgumentNullException>(() => _manager.GetOutputFromString(null));
+            Assert.AreEqual(1, output.Length);
+            Assert.AreEqual(0, output[0].Status);
         }
 
         [Test]
-        public void Test_ThrowArgumentNullExceptionGetOutputFromFile()
+        public void Test_GetOutputFromFile()
+        {
+            var output = _manager.ProcessFile("../../script.txt");
+
+            // Assert
+            Assert.AreEqual(2, output.Length);
+            Assert.AreEqual(0, output[1].Status);
+        }
+
+        [Test]
+        public void Test_PipeListOption()
+        {
+            // Act
+            var output = _manager.ProcessInput("prompt --list | echo");
+
+            // Assert
+            Assert.AreEqual(1, output.Length);
+            Assert.AreEqual(0, output[0].Status);
+        }
+
+        [Test]
+        public void Test_ThrowArgumentNullExceptionProcessInput()
         {
             // Assert
-            Assert.Throws<ArgumentNullException>(() => _manager.GetOutputFromFile(null));
+            Assert.Throws<ArgumentNullException>(() => _manager.ProcessInput(null));
+        }
+
+        [Test]
+        public void Test_ThrowArgumentNullExceptionProcessFile()
+        {
+            // Assert
+            Assert.Throws<ArgumentNullException>(() => _manager.ProcessFile(null));
         }
     }
 }

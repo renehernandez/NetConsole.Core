@@ -12,7 +12,7 @@ using NetConsole.Core.Interfaces;
 
 namespace NetConsole.Core.Managers
 {
-    public class CommandManager : ICommandManager
+    public class CommandManager : IManager<ICommand>
     {
         # region Private Fields
 
@@ -22,7 +22,7 @@ namespace NetConsole.Core.Managers
 
         # region Public Properties
 
-        public ICommandFactory Factory { get; private set; }
+        public IFactory<ICommand> Factory { get; private set; }
 
         # endregion
 
@@ -32,7 +32,7 @@ namespace NetConsole.Core.Managers
         {
         }
 
-        public CommandManager(ICommandFactory factory)
+        public CommandManager(IFactory<ICommand> factory)
         {
             Factory = factory;
             _extractor = new CommandExtractor(Factory);
@@ -43,14 +43,14 @@ namespace NetConsole.Core.Managers
 
         # region Public Methods
 
-        public ReturnInfo[] GetOutputFromString(string input)
+        public ReturnInfo[] ProcessInput(string input)
         {
             if(input == null)
                 throw new ArgumentNullException("input");
             return GetOutput(new CommandGrammarLexer(new AntlrInputStream(input)));           
         }
 
-        public ReturnInfo[] GetOutputFromFile(string filePath)
+        public ReturnInfo[] ProcessFile(string filePath)
         {
             if (filePath == null)
                 throw new ArgumentNullException("filePath");
@@ -63,7 +63,8 @@ namespace NetConsole.Core.Managers
 
         private ReturnInfo[] GetOutput(CommandGrammarLexer lexer)
         {
-            var output = new ReturnInfo[0];
+            var output = new List<ReturnInfo>();
+            object result;
             try
             {
                 lexer.RemoveErrorListeners();
@@ -74,8 +75,23 @@ namespace NetConsole.Core.Managers
                 parser.RemoveErrorListeners();
                 parser.AddErrorListener(ParserErrorListener.Instance);
                 var tree = parser.compile();
-                output = _extractor.Visit(tree);
-                return output;
+                var commands = _extractor.Visit(tree);
+
+                foreach (var commandInfo in commands)
+                {
+                    if (commandInfo.Status == 0)
+                    {
+                        result = commandInfo.Perform()[0];
+                        output.Add(new ReturnInfo(result, commandInfo.Command.Status));
+                    }
+                    else
+                    {
+                        output.Add(new ReturnInfo(commandInfo.Message, commandInfo.Status));
+                    }
+                    
+                }
+
+                return output.ToArray();
             }
             catch (ParseCanceledException e)
             {
