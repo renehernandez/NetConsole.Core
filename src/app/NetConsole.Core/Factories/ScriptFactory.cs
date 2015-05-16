@@ -9,7 +9,7 @@ using NetConsole.Core.Interfaces;
 
 namespace NetConsole.Core.Factories
 {
-    public class ScriptFactory : BaseFactory<ICommandScript>
+    public class ScriptFactory : BaseFactory<IScript>
     {
 
         public ScriptFactory()

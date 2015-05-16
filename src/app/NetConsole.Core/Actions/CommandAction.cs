@@ -11,6 +11,12 @@ namespace NetConsole.Core.Actions
     public class CommandAction : IAction
     {
 
+        # region Private Fields
+
+        private object[] _arguments;
+
+        # endregion
+
         # region Public Properties
 
         public ICommand Command { get; private set; }
@@ -21,7 +27,11 @@ namespace NetConsole.Core.Actions
         
         public string Message { get; private set; }
 
-        public object[] Arguments { get; set; }
+        public object[] Arguments
+        {
+            get { return _arguments; }
+            set { _arguments = Body.MatchMethodParameters(value).Item2; }
+        }
 
         public string Name
         {
@@ -44,13 +54,9 @@ namespace NetConsole.Core.Actions
             }
         }
 
-        public CommandAction(ICommand cmd, MethodInfo action, object[] args = null)
+        public CommandAction(ICommand cmd, MethodInfo action, params object[] args):
+            this("Command action for script", 0, cmd, action, args)
         {
-            Message = "Command action for script";
-            Status = 0;
-            Body = action;
-            Arguments = args;
-            Command = cmd;
         }
 
         # endregion

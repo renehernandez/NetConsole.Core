@@ -45,12 +45,12 @@ namespace NetConsole.Core.Factories
         {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-            var commandTypes = assemblies.SelectMany(asm => asm.GetLoadableTypes()).GetTypesWithInterface<T>();
+            var factoryTypes = assemblies.SelectMany(asm => asm.GetLoadableTypes()).GetTypesWithInterface<T>();
 
             if (!includeNotRegistrable)
-                commandTypes = commandTypes.Where(cmd => !cmd.GetCustomAttributes(true).OfType<NotRegistrableAttribute>().Any());
+                factoryTypes = factoryTypes.Where(cmd => !cmd.GetCustomAttributes(true).OfType<NotRegistrableAttribute>().Any());
 
-            foreach (var type in commandTypes.Where(t => !t.IsAbstract))
+            foreach (var type in factoryTypes.Where(t => !t.IsAbstract))
             {
                 Register(Activator.CreateInstance(type) as T);
             }

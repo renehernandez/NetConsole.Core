@@ -7,10 +7,12 @@ using NetConsole.Core.Grammar;
 
 namespace NetConsole.Core.Interfaces
 {
-    public interface ICommandScript : IRegistrable
+    public interface IScript : IRegistrable
     {
 
         IAction[] Actions { get; }
 
+
+        object[] Perform();
     }
 }

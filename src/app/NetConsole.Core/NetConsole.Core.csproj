@@ -52,7 +52,6 @@
     <Compile Include="Commands\BaseCommand.cs" />
     <Compile Include="Commands\Option.cs" />
     <Compile Include="Commands\OptionAccessor.cs" />
-    <Compile Include="Commands\ScriptCommand.cs" />
     <Compile Include="Converters\Converter.cs" />
     <Compile Include="Errors\ParserErrorListener.cs" />
     <Compile Include="Errors\LexerErrorListener.cs" />
@@ -66,18 +65,17 @@
     <Compile Include="Exceptions\OptionValueNotSetException.cs" />
     <Compile Include="Exceptions\UndefinedCommandOption.cs" />
     <Compile Include="Exceptions\UnregisteredInstanceException.cs" />
-    <Compile Include="Extensions\HelpInfo.cs" />
     <Compile Include="Extensions\MethodInfoExtensions.cs" />
     <Compile Include="Factories\BaseFactory.cs" />
     <Compile Include="Factories\ScriptFactory.cs" />
     <Compile Include="Actions\CommandAction.cs" />
     <Compile Include="Interfaces\IAction.cs" />
     <Compile Include="Interfaces\ICommandManager.cs" />
-    <Compile Include="Interfaces\ICommandScript.cs" />
+    <Compile Include="Interfaces\IScript.cs" />
     <Compile Include="Interfaces\IHelpInfo.cs" />
     <Compile Include="Interfaces\IOptionAccessor.cs" />
     <Compile Include="Interfaces\IRegistrable.cs" />
-    <Compile Include="Managers\CommandExtractor.cs" />
+    <Compile Include="Grammar\CommandExtractor.cs" />
     <Compile Include="Extensions\CommandExtension.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="Factories\CommandFactory.cs" />
@@ -87,6 +85,7 @@
     <Compile Include="Interfaces\IParameterInfo.cs" />
     <Compile Include="Interfaces\IReturnInfo.cs" />
     <Compile Include="Managers\CommandManager.cs" />
+    <Compile Include="Managers\ScriptManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

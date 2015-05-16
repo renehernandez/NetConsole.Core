@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using NetConsole.Core.Grammar;
 
 namespace NetConsole.Core.Interfaces
 {

@@ -24,7 +24,7 @@ namespace NetConsole.Core.Actions
 
         # region Constructors
 
-        public PipeAction(CommandAction[] sequence, object[] args)
+        public PipeAction(CommandAction[] sequence, params object[] args)
         {
             Status = 0;
             Arguments = args;
@@ -39,7 +39,7 @@ namespace NetConsole.Core.Actions
         public object[] Perform()
         {
             Sequence[0].Arguments = Arguments;
-            object[] output = Sequence[0].Perform();
+            var output = Sequence[0].Perform();
 
             if (Sequence[0].Status != 0)
             {

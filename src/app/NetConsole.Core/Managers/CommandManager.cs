@@ -12,7 +12,7 @@ using NetConsole.Core.Interfaces;
 
 namespace NetConsole.Core.Managers
 {
-    public class CommandManager : ICommandManager
+    public class CommandManager : IManager<ICommand>
     {
         # region Private Fields
 
@@ -43,14 +43,14 @@ namespace NetConsole.Core.Managers
 
         # region Public Methods
 
-        public ReturnInfo[] GetOutputFromString(string input)
+        public ReturnInfo[] ProcessInput(string input)
         {
             if(input == null)
                 throw new ArgumentNullException("input");
             return GetOutput(new CommandGrammarLexer(new AntlrInputStream(input)));           
         }
 
-        public ReturnInfo[] GetOutputFromFile(string filePath)
+        public ReturnInfo[] ProcessFile(string filePath)
         {
             if (filePath == null)
                 throw new ArgumentNullException("filePath");

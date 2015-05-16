@@ -32,8 +32,14 @@ list_params
 	;
 
 command_param
+	:	type_param								# TypeParam
+	|	DOUBLE_HYPHEN ID (EQUAL type_param)?	# OptionParam
+	;
+
+type_param
 	:	text								# StringParam
-	|	DOUBLE_HYPHEN ID (EQUAL text)?		# OptionParam
+	|	INT									# IntParam
+	|	DOUBLE								# DoubleParam
 	;
 
 text 
@@ -65,6 +71,11 @@ fragment
 
 fragment
 	QUOTES : '"';
+
+
+INT : HYPHEN? DIGIT+;
+
+DOUBLE : HYPHEN? DIGIT+ (DOT DIGIT+)? ;
 
 ID	: LETTER (LETTER | DIGIT | UNDERSCORE | HYPHEN )*;
 
