@@ -12,26 +12,38 @@ namespace NetConsole.Core.Factories
     public class CommandFactory : IFactory<ICommand>
     {
 
-        private static readonly List<Func<ICommand>> Constructors; 
+        private static readonly Dictionary<string, Func<ICommand>> Commands; 
 
         static CommandFactory()
         {
             var commandTypes = TypeExtensions.GetTypesWithInterface<ICommand>();
 
-            Constructors = new List<Func<ICommand>>();
+            Commands = new Dictionary<string, Func<ICommand>>();
 
             foreach (var info in commandTypes.Where(cmd => !cmd.IsAbstract && !cmd.GetCustomAttributes(true).OfType<NotRegistrableAttribute>().Any()).
                 Select(type => type.GetConstructor(Type.EmptyTypes)))
             {
-                Constructors.Add(() => info.Invoke(new object[0]) as ICommand);
+                var cmd = info.Invoke(new object[0]) as ICommand;
+                Commands.Add(cmd.Name, () => cmd);
             }
 
         }
 
-        public IEnumerable<ICommand> GenerateAll()
+        public IEnumerable<ICommand> GetInstances()
         {
-            return Constructors.Select(f => f());
-        } 
+            return Commands.Values.Select(f => f());
+        }
+
+        public Func<ICommand> GetGenerator(string name)
+        {
+            return Commands[name];
+        }
+
+
+        public IEnumerable<string> GetNames()
+        {
+            return Commands.Keys;
+        }
 
     }
 }

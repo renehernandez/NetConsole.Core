@@ -68,7 +68,7 @@ namespace NetConsole.Core.Caching
 
         public virtual void RegisterAll(IFactory<TItem> factory)
         {
-            foreach (var item in factory.GenerateAll())
+            foreach (var item in factory.GetInstances())
             {
                 Register(item);
             }

@@ -62,7 +62,10 @@ namespace NetConsole.Core.Managers
 
         private void ImportScripts()
         {
-            //Cache.RegisterAll();
+            foreach (var scriptName in Factory.GetNames().Where(name => !Cache.Contains(name)))
+            {
+                Cache.Register(Factory.GetGenerator(scriptName)());
+            }
         }
 
         # endregion

@@ -2,7 +2,7 @@
 
 namespace NetConsole.Core.Interfaces
 {
-    public interface ICache<T> where T : class
+    public interface ICache<T> where T : class, IRegistrable
     {
 
         void Register(T instance);

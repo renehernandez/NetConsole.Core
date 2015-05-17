@@ -107,9 +107,9 @@ namespace NetConsole.Core.Managers
 
         private void ImportCommands()
         {
-            foreach (var cmd in Factory.GenerateAll().Where(cmd => !Cache.Contains(cmd.Name)))
+            foreach (var cmdName in Factory.GetNames().Where(name => !Cache.Contains(name)))
             {
-                Cache.Register(cmd);
+                Cache.Register(Factory.GetGenerator(cmdName)());
             }
         }
 
