@@ -2,6 +2,7 @@
 using NetConsole.Core.Attributes;
 using NetConsole.Core.Commands;
 using NetConsole.Core.Exceptions;
+using NetConsole.Core.Caching;
 using NetConsole.Core.Factories;
 using NetConsole.Core.Interfaces;
 using NUnit.Framework;
@@ -9,82 +10,69 @@ using NUnit.Framework;
 namespace NetConsole.Core.Tests
 {
     [TestFixture]
-    public class CommandFactoryTest
+    public class CommandCacheTest
     {
 
-        private IFactory<ICommand> _factory;
+        private ICache<ICommand> _cache;
         private ICommand _cmd;
 
         [SetUp]
         public void SetUp()
         {
-            _factory = new CommandFactory();
+            _cache = CommandCache.GetEmptyCache();
             _cmd = new EchoCommand();
-            _factory.Register(_cmd);
+            _cache.Register(_cmd);
         }
 
         [Test]
         public void Test_Contains()
         {
             // Assert
-            Assert.AreEqual(false, _factory.Contains("hello"));
-            Assert.AreEqual(true, _factory.Contains(_cmd.Name));
+            Assert.AreEqual(false, _cache.Contains("hello"));
+            Assert.AreEqual(true, _cache.Contains(_cmd.Name));
         }
 
         [Test]
         public void Test_Register()
         {
             // Assert
-            Assert.AreEqual(_cmd, _factory.GetInstance(_cmd.Name));
-            Assert.AreEqual(1, _factory.GetAll().Count());
+            Assert.AreEqual(_cmd, _cache.GetInstance(_cmd.Name));
+            Assert.AreEqual(1, _cache.GetAll().Count());
         }
 
         [Test]
         public void Test_RegisterNotRegistrable()
         {
             // Arrange
-            _factory = new CommandFactory();
+            _cache = CommandCache.GetEmptyCache();
             var cmdNotRegistrable = new NotRegistrableCommand();
 
             // Act
-            _factory.Register(cmdNotRegistrable);
+            _cache.Register(cmdNotRegistrable);
 
             // Assert
-            Assert.AreEqual(1, _factory.GetAll().Count());
-            Assert.AreEqual(cmdNotRegistrable, _factory.GetInstance(cmdNotRegistrable.Name));
+            Assert.AreEqual(1, _cache.GetAll().Count());
+            Assert.AreEqual(cmdNotRegistrable, _cache.GetInstance(cmdNotRegistrable.Name));
         }
 
         [Test]
         public void Test_RegisterAll()
         {
             // Arrange
-            _factory = new CommandFactory();
+            _cache = CommandCache.GetEmptyCache();
 
             // Act
-            _factory.RegisterAll();
+            _cache.RegisterAll(new CommandFactory());
 
             // Assert
-            Assert.AreEqual(2, _factory.GetAll().Count());
-        }
-
-        [Test]
-        public void Test_RegisterAllWithNotRegistrable()
-        {
-            // Arrange
-            _factory = new CommandFactory();
-
-            // Act
-            _factory.RegisterAll(true);
-
-            // Assert
-            Assert.AreEqual(3, _factory.GetAll().Count());
+            Assert.AreEqual(2, _cache.GetAll().Count());
         }
 
         [Test]
         public void Test_RegisterThrowsDuplicatedException()
         {
             // Assert
-            Assert.Throws<DuplicatedNameException>(() => _factory.Register(_cmd));
+            Assert.Throws<DuplicatedNameException>(() => _cache.Register(_cmd));
         }
 
         [Test]
@@ -94,45 +82,45 @@ namespace NetConsole.Core.Tests
             ICommand cmd = null;
 
             // Assert
-            Assert.Throws<NullInstanceException>(() => _factory.Register(cmd));
+            Assert.Throws<NullInstanceException>(() => _cache.Register(cmd));
         }
 
         [Test]
         public void Test_GetInstanceThrowsException()
         {
             // Assert
-            Assert.Throws<UnregisteredInstanceException>(() => _factory.GetInstance("close"));
+            Assert.Throws<UnregisteredInstanceException>(() => _cache.GetInstance("close"));
         }
 
         [Test]
         public void Test_UnregisterThrowsException()
         {
             // Assert
-            Assert.Throws<FailedUnregisterOperationException>(() => _factory.Unregister("close"));
+            Assert.Throws<FailedUnregisterOperationException>(() => _cache.Unregister("close"));
         }
 
         [Test]
         public void Test_UnregisterNotThrowsException()
         {
             // Assert
-            Assert.DoesNotThrow(() => _factory.Unregister(_cmd.Name));
+            Assert.DoesNotThrow(() => _cache.Unregister(_cmd.Name));
         }
 
         [Test]
         public void Test_UnregisterRemoveCommandFromCache()
         {
             // Act
-            _factory.Unregister(_cmd.Name);
+            _cache.Unregister(_cmd.Name);
 
             // Assert
-            Assert.AreEqual(0, _factory.GetAll().Count());
+            Assert.AreEqual(0, _cache.GetAll().Count());
         }
 
         [Test]
         public void Test_UnregisterReturnsCommand()
         {
             // Assert
-            Assert.AreEqual(_cmd, _factory.Unregister(_cmd.Name));
+            Assert.AreEqual(_cmd, _cache.Unregister(_cmd.Name));
         }
 
     }

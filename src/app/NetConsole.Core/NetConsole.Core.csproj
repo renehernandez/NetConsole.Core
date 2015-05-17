@@ -32,6 +32,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -66,11 +67,14 @@
     <Compile Include="Exceptions\UndefinedCommandOption.cs" />
     <Compile Include="Exceptions\UnregisteredInstanceException.cs" />
     <Compile Include="Extensions\MethodInfoExtensions.cs" />
-    <Compile Include="Factories\BaseFactory.cs" />
-    <Compile Include="Factories\ScriptFactory.cs" />
+    <Compile Include="Caching\BaseCache.cs" />
+    <Compile Include="Caching\ScriptCache.cs" />
     <Compile Include="Actions\CommandAction.cs" />
+    <Compile Include="Factories\CommandFactory.cs" />
+    <Compile Include="Factories\ScriptFactory.cs" />
     <Compile Include="Interfaces\IAction.cs" />
     <Compile Include="Interfaces\ICommandManager.cs" />
+    <Compile Include="Interfaces\IFactory.cs" />
     <Compile Include="Interfaces\IScript.cs" />
     <Compile Include="Interfaces\IHelpInfo.cs" />
     <Compile Include="Interfaces\IOptionAccessor.cs" />
@@ -78,10 +82,10 @@
     <Compile Include="Grammar\CommandExtractor.cs" />
     <Compile Include="Extensions\CommandExtension.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
-    <Compile Include="Factories\CommandFactory.cs" />
+    <Compile Include="Caching\CommandCache.cs" />
     <Compile Include="Grammar\ReturnInfo.cs" />
     <Compile Include="Interfaces\ICommand.cs" />
-    <Compile Include="Interfaces\IFactory.cs" />
+    <Compile Include="Interfaces\ICache.cs" />
     <Compile Include="Interfaces\IParameterInfo.cs" />
     <Compile Include="Interfaces\IReturnInfo.cs" />
     <Compile Include="Managers\CommandManager.cs" />

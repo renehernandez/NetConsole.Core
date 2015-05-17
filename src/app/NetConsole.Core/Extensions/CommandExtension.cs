@@ -16,12 +16,12 @@ namespace NetConsole.Core.Extensions
     {
         # region Public Extensions
 
-        public static MethodInfo FindAction<T>(this T instance, string actionName) where T : ICommand
+        public static MethodInfo FindAction(this ICommand instance, string actionName)
         {
             return instance.FindActions().SingleOrDefault(m => m.ActionName() == actionName);   
         }
 
-        public static IEnumerable<MethodInfo> FindActions<T>(this T instance) where T : ICommand
+        public static IEnumerable<MethodInfo> FindActions(this ICommand instance)
         {
             var type = instance.GetType();
             var actions = type.GetMethods(BindingFlags.Public | BindingFlags.Instance);
@@ -29,12 +29,12 @@ namespace NetConsole.Core.Extensions
             return actions.Where(m => !m.IsSpecialName && m.DeclaringType != typeof(object));
         }
 
-        public static MethodInfo FindDefaultAction<T>(this T instance) where T : ICommand
+        public static MethodInfo FindDefaultAction(this ICommand instance)
         {
             return instance.FindActions().FirstOrDefault(m => m.GetCustomAttributes(true).OfType<DefaultActionAttribute>().Any());
         }
 
-        public static MethodInfo FindAction<T>(this T instance, string actionName = null, params object[] arguments) where T : ICommand
+        public static MethodInfo FindAction(this ICommand instance, string actionName = null, params object[] arguments)
         {
             if (actionName != null)
             {
@@ -49,37 +49,12 @@ namespace NetConsole.Core.Extensions
                         m.MatchMethodParameters(arguments).Item1);
         }
 
-        public static object Perform<T>(this T instance, MethodInfo info, object[] paramsInfo) where T : ICommand
+        public static object Perform(this ICommand instance, MethodInfo info, object[] paramsInfo)
         {
-            //ParameterInfo[] parameters = info.GetParameters();
-            //bool hasParams = false;
-            //object[] inputs;
-            //if (parameters.Length > 0)
-            //    hasParams = parameters[parameters.Length - 1].GetCustomAttributes(typeof(ParamArrayAttribute), false).Length > 0;
-
-            //if (hasParams)
-            //{
-            //    int lastParamPosition = parameters.Length - 1;
-            //    inputs = new object[parameters.Length];
-            //    for (int i = 0; i < lastParamPosition; i++)
-            //        inputs[i] = paramsInfo[i];
-
-            //    var paramsType = parameters[lastParamPosition].ParameterType.GetElementType();
-            //    var extra = Array.CreateInstance(paramsType, paramsInfo.Length - lastParamPosition);
-            //    for (int i = 0; i < extra.Length; i++)
-            //        extra.SetValue(paramsInfo[i + lastParamPosition], i);
-
-            //    inputs[lastParamPosition] = extra;
-            //}
-            //else
-            //{
-            //    inputs = paramsInfo.ToArray();
-            //}
-
             return info.Invoke(instance, paramsInfo);
         }
 
-        public static MethodInfo GetMethodForOption<T>(this T instance, string option) where T : ICommand
+        public static MethodInfo GetMethodForOption<T>(this T instance, string option)
         {
             var type = instance.GetType();
 

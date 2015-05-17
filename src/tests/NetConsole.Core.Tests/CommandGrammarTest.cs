@@ -7,6 +7,7 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using NetConsole.Core.Actions;
 using NetConsole.Core.Commands;
+using NetConsole.Core.Caching;
 using NetConsole.Core.Factories;
 using NetConsole.Core.Grammar;
 using NetConsole.Core.Managers;
@@ -22,15 +23,14 @@ namespace NetConsole.Core.Tests
         private CommandGrammarLexer _lexer;
         private CommonTokenStream _tokens;
         private CommandGrammarParser _parser;
-        private CommandFactory _factory;
+        private CommandCache _cache;
 
         [SetUp]
         public void SetUp()
         {
-            _factory = new CommandFactory();
-            _factory.Register(new EchoCommand());
-            _factory.Register(new PromptCommand());
-            _extractor = new CommandExtractor(_factory);
+            _cache = CommandCache.GetEmptyCache();
+            _cache.RegisterAll(new CommandFactory());
+            _extractor = new CommandExtractor(_cache);
         }
 
         [Test]

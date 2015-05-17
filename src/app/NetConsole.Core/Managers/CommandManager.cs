@@ -6,6 +6,8 @@ using System.Text;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using NetConsole.Core.Errors;
+using NetConsole.Core.Caching;
+using NetConsole.Core.Extensions;
 using NetConsole.Core.Factories;
 using NetConsole.Core.Grammar;
 using NetConsole.Core.Interfaces;
@@ -16,27 +18,31 @@ namespace NetConsole.Core.Managers
     {
         # region Private Fields
 
-        private CommandExtractor _extractor;
+        private readonly CommandExtractor _extractor;
 
         # endregion
 
         # region Public Properties
 
-        public IFactory<ICommand> Factory { get; private set; }
+        public IFactory<ICommand> Factory { get; private set; } 
+
+        public ICache<ICommand> Cache { get; private set; }
 
         # endregion
 
         # region Constructors
 
-        public CommandManager(): this(new CommandFactory())
+        public CommandManager(): this(CommandCache.GetCache(), new CommandFactory())
         {
         }
 
-        public CommandManager(IFactory<ICommand> factory)
+        public CommandManager(ICache<ICommand> cache, IFactory<ICommand> factory)
         {
+            Cache = cache;
             Factory = factory;
-            _extractor = new CommandExtractor(Factory);
-            ImportAllCommands();
+            ImportCommands();
+
+            _extractor = new CommandExtractor(Cache);
         }
 
         # endregion
@@ -75,18 +81,18 @@ namespace NetConsole.Core.Managers
                 parser.RemoveErrorListeners();
                 parser.AddErrorListener(ParserErrorListener.Instance);
                 var tree = parser.compile();
-                var commands = _extractor.Visit(tree);
+                var actions = _extractor.Visit(tree);
 
-                foreach (var commandInfo in commands)
+                foreach (var actionInfo in actions)
                 {
-                    if (commandInfo.Status == 0)
+                    if (actionInfo.Status == 0)
                     {
-                        result = commandInfo.Perform()[0];
-                        output.Add(new ReturnInfo(result, commandInfo.Command.Status));
+                        result = actionInfo.Perform()[0];
+                        output.Add(new ReturnInfo(result, actionInfo.Command.Status));
                     }
                     else
                     {
-                        output.Add(new ReturnInfo(commandInfo.Message, commandInfo.Status));
+                        output.Add(new ReturnInfo(actionInfo.Message, actionInfo.Status));
                     }
                     
                 }
@@ -99,9 +105,12 @@ namespace NetConsole.Core.Managers
             }
         }
 
-        private void ImportAllCommands()
+        private void ImportCommands()
         {
-            Factory.RegisterAll();
+            foreach (var cmd in Factory.GenerateAll().Where(cmd => !Cache.Contains(cmd.Name)))
+            {
+                Cache.Register(cmd);
+            }
         }
 
         # endregion

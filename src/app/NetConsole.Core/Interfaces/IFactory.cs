@@ -2,20 +2,10 @@
 
 namespace NetConsole.Core.Interfaces
 {
-    public interface IFactory<T>
+    public interface IFactory<T> where T : class
     {
 
-        void Register(T instance);
-
-        T Unregister(string name);
-
-        void RegisterAll(bool includeNotRegistrable = false);
-
-        T GetInstance(string name);
-
-        IEnumerable<T> GetAll();
-
-        bool Contains(string name);
+        IEnumerable<T> GenerateAll();
 
     }
 }

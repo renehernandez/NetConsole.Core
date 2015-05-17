@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NetConsole.Core.Exceptions;
+using NetConsole.Core.Caching;
 using NetConsole.Core.Factories;
 using NetConsole.Core.Grammar;
 using NetConsole.Core.Interfaces;
@@ -16,13 +17,21 @@ namespace NetConsole.Core.Managers
 
         public IFactory<IScript> Factory { get; private set; }
 
+        public ICache<IScript> Cache { get; private set; }
+
         # endregion
 
         # region Constructors
 
-        public ScriptManager(IFactory<IScript> factory = null)
+        public ScriptManager() : this(ScriptCache.GetCache(), new ScriptFactory())
         {
-            Factory = factory ?? new ScriptFactory();
+            
+        }
+
+        public ScriptManager(ICache<IScript> cache, IFactory<IScript> factory)
+        {
+            Cache = cache;
+            Factory = factory;
             ImportScripts();
         }
 
@@ -38,7 +47,7 @@ namespace NetConsole.Core.Managers
             var output = new List<ReturnInfo>();
             try
             {
-                var results = Factory.GetInstance(input).Perform();
+                var results = Cache.GetInstance(input).Perform();
                 return output.Concat(results.Select(o => new ReturnInfo(o, 0))).ToArray();
             }
             catch (CoreException e)
@@ -53,7 +62,7 @@ namespace NetConsole.Core.Managers
 
         private void ImportScripts()
         {
-            Factory.RegisterAll();
+            //Cache.RegisterAll();
         }
 
         # endregion
