@@ -1,21 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace NetConsole.Core.Interfaces
 {
-    public interface IFactory<T>
+    public interface IFactory<T> where T : class, IRegistrable
     {
 
-        void Register(T instance);
+        IEnumerable<T> GetInstances();
 
-        T Unregister(string name);
+        Func<T> GetGenerator(string name);
 
-        void RegisterAll(bool includeNotRegistrable = false);
-
-        T GetInstance(string name);
-
-        IEnumerable<T> GetAll();
-
-        bool Contains(string name);
+        IEnumerable<string> GetNames();
 
     }
 }

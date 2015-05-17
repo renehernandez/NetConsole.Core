@@ -15,7 +15,7 @@ namespace NetConsole.Core.Grammar
 
         public int LastOperationStatus { get; private set; }
 
-        private IFactory<ICommand> _factory;
+        private ICache<ICommand> _cache;
 
         private List<object> _parameters;
 
@@ -23,9 +23,9 @@ namespace NetConsole.Core.Grammar
 
         private object _currentValue;
 
-        public CommandExtractor(IFactory<ICommand> factory)
+        public CommandExtractor(ICache<ICommand> cache)
         {
-            _factory = factory;
+            _cache = cache;
             _parameters = new List<object>();
             LastOperationStatus = 0;
         }
@@ -184,13 +184,13 @@ namespace NetConsole.Core.Grammar
 
             var parameters = _parameters;
 
-            if (!_factory.Contains(cmdName))
+            if (!_cache.Contains(cmdName))
             {
                 LastOperationStatus = 1;
                 return new CommandAction("Command not present in factory.", 1);
             }
 
-            var cmd = _factory.GetInstance(cmdName);
+            var cmd = _cache.GetInstance(cmdName);
             string action = header.ChildCount > 2 ? header.GetChild(2).GetText() : null;
 
             MethodInfo actionInfo = null;
