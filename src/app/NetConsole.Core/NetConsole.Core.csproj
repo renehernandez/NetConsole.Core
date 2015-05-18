@@ -32,6 +32,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -39,29 +40,56 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actions\AndAction.cs" />
+    <Compile Include="Actions\OrAction.cs" />
+    <Compile Include="Actions\PipeAction.cs" />
+    <Compile Include="Attributes\ActionForOptionAttribute.cs" />
+    <Compile Include="Attributes\CommandHelpAttribute.cs" />
     <Compile Include="Attributes\DefaultActionAttribute.cs" />
+    <Compile Include="Attributes\ActionHelpAttribute.cs" />
     <Compile Include="Attributes\NotRegistrableAttribute.cs" />
+    <Compile Include="Attributes\OptionHelpAttribute.cs" />
+    <Compile Include="Attributes\ParamHelpAttribute.cs" />
+    <Compile Include="Commands\BaseCommand.cs" />
+    <Compile Include="Commands\Option.cs" />
+    <Compile Include="Commands\OptionAccessor.cs" />
+    <Compile Include="Converters\Converter.cs" />
     <Compile Include="Errors\ParserErrorListener.cs" />
     <Compile Include="Errors\LexerErrorListener.cs" />
     <Compile Include="Exceptions\CoreException.cs" />
-    <Compile Include="Exceptions\DuplicatedCommandNameException.cs" />
+    <Compile Include="Exceptions\DeclarableOnlyOptionException.cs" />
+    <Compile Include="Exceptions\DuplicatedNameException.cs" />
+    <Compile Include="Exceptions\DuplicatedCommandOptionValueException.cs" />
     <Compile Include="Exceptions\FailedUnregisterOperationException.cs" />
     <Compile Include="Exceptions\NotInterfaceTypeException.cs" />
-    <Compile Include="Exceptions\UnregisteredCommandException.cs" />
+    <Compile Include="Exceptions\NullInstanceException.cs" />
+    <Compile Include="Exceptions\OptionValueNotSetException.cs" />
+    <Compile Include="Exceptions\UndefinedCommandOption.cs" />
+    <Compile Include="Exceptions\UnregisteredInstanceException.cs" />
+    <Compile Include="Extensions\MethodInfoExtensions.cs" />
+    <Compile Include="Caching\BaseCache.cs" />
+    <Compile Include="Caching\ScriptCache.cs" />
+    <Compile Include="Actions\CommandAction.cs" />
+    <Compile Include="Factories\CommandFactory.cs" />
+    <Compile Include="Factories\ScriptFactory.cs" />
+    <Compile Include="Interfaces\IAction.cs" />
     <Compile Include="Interfaces\ICommandManager.cs" />
-    <Compile Include="Managers\CommandExtractor.cs" />
-    <Compile Include="Commands\EchoCommand.cs" />
-    <Compile Include="Commands\PromptCommand.cs" />
+    <Compile Include="Interfaces\IFactory.cs" />
+    <Compile Include="Interfaces\IScript.cs" />
+    <Compile Include="Interfaces\IHelpInfo.cs" />
+    <Compile Include="Interfaces\IOptionAccessor.cs" />
+    <Compile Include="Interfaces\IRegistrable.cs" />
+    <Compile Include="Grammar\CommandExtractor.cs" />
     <Compile Include="Extensions\CommandExtension.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
-    <Compile Include="Factories\CommandFactory.cs" />
-    <Compile Include="Grammar\ParamInfo.cs" />
+    <Compile Include="Caching\CommandCache.cs" />
     <Compile Include="Grammar\ReturnInfo.cs" />
     <Compile Include="Interfaces\ICommand.cs" />
-    <Compile Include="Interfaces\ICommandFactory.cs" />
+    <Compile Include="Interfaces\ICache.cs" />
     <Compile Include="Interfaces\IParameterInfo.cs" />
     <Compile Include="Interfaces\IReturnInfo.cs" />
     <Compile Include="Managers\CommandManager.cs" />
+    <Compile Include="Managers\ScriptManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -72,6 +100,11 @@
       <Visitor>True</Visitor>
     </Antlr4>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="paket.references" />
+    <None Include="paket.template" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

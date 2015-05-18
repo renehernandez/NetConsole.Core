@@ -2,12 +2,14 @@
 
 namespace NetConsole.Core.Interfaces
 {
-    public interface ICommandManager
+    public interface IManager<T> where T : class, IRegistrable
     {
-        ICommandFactory Factory { get; }
 
-        ReturnInfo[] GetOutputFromString(string input);
+        IFactory<T> Factory { get;  }
 
-        ReturnInfo[] GetOutputFromFile(string filePath);
+        ICache<T> Cache { get; }
+
+        ReturnInfo[] ProcessInput(string input);
+
     }
 }

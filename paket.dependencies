@@ -6,3 +6,4 @@ nuget NUnit ~> 2.6.4
 nuget FAKE ~> 3.28.5
 nuget NUnit.Runners
 nuget NUnitTestAdapter
+nuget RhinoMocks

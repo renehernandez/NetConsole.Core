@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Text;
+using Antlr4.Runtime.Misc;
 using NetConsole.Core.Attributes;
+using NetConsole.Core.Converters;
 using NetConsole.Core.Grammar;
 using NetConsole.Core.Interfaces;
 
@@ -10,86 +14,58 @@ namespace NetConsole.Core.Extensions
 {
     public static class CommandExtension
     {
+        # region Public Extensions
 
-        public static MethodInfo HasMatch<T>(this T instance, string action = null, params string[] parametersTypes) where T : ICommand
+        public static MethodInfo FindAction(this ICommand instance, string actionName)
+        {
+            return instance.FindActions().SingleOrDefault(m => m.ActionName() == actionName);   
+        }
+
+        public static IEnumerable<MethodInfo> FindActions(this ICommand instance)
         {
             var type = instance.GetType();
-            var methodsInfo = type.GetMethods(BindingFlags.Public | BindingFlags.Instance);
+            var actions = type.GetMethods(BindingFlags.Public | BindingFlags.Instance);
 
-            if (action != null)
+            return actions.Where(m => !m.IsSpecialName && m.DeclaringType != typeof(object));
+        }
+
+        public static MethodInfo FindDefaultAction(this ICommand instance)
+        {
+            return instance.FindActions().FirstOrDefault(m => m.GetCustomAttributes(true).OfType<DefaultActionAttribute>().Any());
+        }
+
+        public static MethodInfo FindAction(this ICommand instance, string actionName = null, params object[] arguments)
+        {
+            if (actionName != null)
             {
-                var info = methodsInfo.SingleOrDefault(m => m.Name.ToLower() == action);
-                return info != null && CheckMethodParameters(info, parametersTypes) ? info : null;
+                var actions = instance.FindActions().Where(m => m.ActionName() == actionName);
+                return actions.FirstOrDefault(info => info.MatchMethodParameters(arguments).Item1);
             }
 
             return
-                methodsInfo.FirstOrDefault(
+                instance.FindActions().FirstOrDefault(
                     m =>
-                        m.GetCustomAttributes(typeof (DefaultActionAttribute), true).Length != 0 &&
-                        CheckMethodParameters(m, parametersTypes));
+                        m.GetCustomAttributes(true).OfType<DefaultActionAttribute>().Any() &&
+                        m.MatchMethodParameters(arguments).Item1);
         }
 
-        private static bool CheckMethodParameters(MethodInfo info, string[] parametersTypes)
+        public static object Perform(this ICommand instance, MethodInfo info, object[] paramsInfo)
         {
-            var parameters = info.GetParameters();
-
-            if (parameters.Length == 0)
-            {
-                return parametersTypes.Length == 0;
-            }   
-
-            bool hasParams = parameters[parameters.Length - 1].GetCustomAttributes(typeof (ParamArrayAttribute), false).Length > 0;
-            int length = Math.Min(parameters.Length, parametersTypes.Length);
-            for (int i = 0; i < length; i++)
-            {
-                if (i == parameters.Length - 1 && hasParams)
-                {
-                    string paramsType = parameters[parameters.Length - 1].ParameterType.GetElementType().Name;
-                    for(int j = i; j < parametersTypes.Length; j++)
-                        if (parametersTypes[j] != paramsType)
-                            return false;
-
-                    return true;
-                }
-
-                if (parameters[i].ParameterType.Name != parametersTypes[i])
-                    break;
-
-                if (i == parameters.Length - 1)
-                    return true;
-            }
-
-            return false;
+            return info.Invoke(instance, paramsInfo);
         }
 
-        public static object Perform<T>(this T instance, MethodInfo info, IList<ParamInfo> paramsInfo) where T : ICommand
+        public static MethodInfo GetMethodForOption<T>(this T instance, string option)
         {
-            ParameterInfo[] parameters = info.GetParameters();
-            bool hasParams = false;
-            object[] inputs;
-            if (parameters.Length > 0)
-                hasParams = parameters[parameters.Length - 1].GetCustomAttributes(typeof(ParamArrayAttribute), false).Length > 0;
+            var type = instance.GetType();
 
-            if (hasParams)
-            {
-                int lastParamPosition = parameters.Length - 1;
-                inputs = new object[parameters.Length];
-                for (int i = 0; i < lastParamPosition; i++)
-                    inputs[i] = paramsInfo[i].Value;
-
-                var paramsType = parameters[lastParamPosition].ParameterType.GetElementType();
-                var extra = Array.CreateInstance(paramsType, paramsInfo.Count - lastParamPosition);
-                for (int i = 0; i < extra.Length; i++)
-                    extra.SetValue(paramsInfo[i + lastParamPosition].Value, i);
-
-                inputs[lastParamPosition] = extra;
-            }
-            else
-            {
-                inputs = paramsInfo.Select(x => x.Value).ToArray();
-            }
-
-            return info.Invoke(instance, inputs);
+            return type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | 
+                BindingFlags.FlattenHierarchy | BindingFlags.Static | BindingFlags.Instance)
+                .FirstOrDefault(m =>
+                    m.GetCustomAttributes(true).OfType<ActionForOptionAttribute>()
+                        .Any(at => at.Name.Equals(option)));
         }
+
+        # endregion
+
     }
 }

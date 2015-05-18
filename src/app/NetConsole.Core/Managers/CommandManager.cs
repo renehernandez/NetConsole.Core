@@ -6,51 +6,57 @@ using System.Text;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using NetConsole.Core.Errors;
+using NetConsole.Core.Caching;
+using NetConsole.Core.Extensions;
 using NetConsole.Core.Factories;
 using NetConsole.Core.Grammar;
 using NetConsole.Core.Interfaces;
 
 namespace NetConsole.Core.Managers
 {
-    public class CommandManager : ICommandManager
+    public class CommandManager : IManager<ICommand>
     {
         # region Private Fields
 
-        private CommandExtractor _extractor;
+        private readonly CommandExtractor _extractor;
 
         # endregion
 
         # region Public Properties
 
-        public ICommandFactory Factory { get; private set; }
+        public IFactory<ICommand> Factory { get; private set; } 
+
+        public ICache<ICommand> Cache { get; private set; }
 
         # endregion
 
         # region Constructors
 
-        public CommandManager(): this(new CommandFactory())
+        public CommandManager(): this(CommandCache.GetCache(), new CommandFactory())
         {
         }
 
-        public CommandManager(ICommandFactory factory)
+        public CommandManager(ICache<ICommand> cache, IFactory<ICommand> factory)
         {
+            Cache = cache;
             Factory = factory;
-            _extractor = new CommandExtractor(Factory);
-            ImportAllCommands();
+            ImportCommands();
+
+            _extractor = new CommandExtractor(Cache);
         }
 
         # endregion
 
         # region Public Methods
 
-        public ReturnInfo[] GetOutputFromString(string input)
+        public ReturnInfo[] ProcessInput(string input)
         {
             if(input == null)
                 throw new ArgumentNullException("input");
             return GetOutput(new CommandGrammarLexer(new AntlrInputStream(input)));           
         }
 
-        public ReturnInfo[] GetOutputFromFile(string filePath)
+        public ReturnInfo[] ProcessFile(string filePath)
         {
             if (filePath == null)
                 throw new ArgumentNullException("filePath");
@@ -63,7 +69,8 @@ namespace NetConsole.Core.Managers
 
         private ReturnInfo[] GetOutput(CommandGrammarLexer lexer)
         {
-            var output = new ReturnInfo[0];
+            var output = new List<ReturnInfo>();
+            object result;
             try
             {
                 lexer.RemoveErrorListeners();
@@ -74,8 +81,23 @@ namespace NetConsole.Core.Managers
                 parser.RemoveErrorListeners();
                 parser.AddErrorListener(ParserErrorListener.Instance);
                 var tree = parser.compile();
-                output = _extractor.Visit(tree);
-                return output;
+                var actions = _extractor.Visit(tree);
+
+                foreach (var actionInfo in actions)
+                {
+                    if (actionInfo.Status == 0)
+                    {
+                        result = actionInfo.Perform()[0];
+                        output.Add(new ReturnInfo(result, actionInfo.Command.Status));
+                    }
+                    else
+                    {
+                        output.Add(new ReturnInfo(actionInfo.Message, actionInfo.Status));
+                    }
+                    
+                }
+
+                return output.ToArray();
             }
             catch (ParseCanceledException e)
             {
@@ -83,9 +105,12 @@ namespace NetConsole.Core.Managers
             }
         }
 
-        private void ImportAllCommands()
+        private void ImportCommands()
         {
-            Factory.RegisterAll();
+            foreach (var cmdName in Factory.GetNames().Where(name => !Cache.Contains(name)))
+            {
+                Cache.Register(Factory.GetGenerator(cmdName)());
+            }
         }
 
         # endregion
