@@ -1,3 +1,9 @@
+#### 0.4.0 - May 03 2015
+* Added option support for commands
+* Added support for automated script
+* Increase test suite
+* Split Cache behaviour from Factory
+
 #### 0.3.0 - May 03 2015
 * Added support for early bail error strategy
 * Fixed some test and added several ones
